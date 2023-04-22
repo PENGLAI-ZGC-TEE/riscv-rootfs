@@ -5,7 +5,7 @@ include $(RISCV_ROOTFS_HOME)/Makefile.app
 REPO_PATH = repo
 $(REPO_PATH):
 	mkdir -p $@
-	git clone --depth 1 -b 4.0.2 https://github.com/antirez/redis.git $@
+	git clone --depth 1 -b 4.0.2 https://github.com/redis/redis.git $@
 	cd $@ && git apply ../riscv-cross-compile.patch
 
 $(APP): | $(REPO_PATH)
