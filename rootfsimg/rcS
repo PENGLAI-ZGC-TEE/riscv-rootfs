@@ -2,9 +2,20 @@
 
 pwd
 ls
-echo 12345
-/root/benchmark/stream
-ifconfig -a
+# echo 12345
+# /root/benchmark/stream
+# ifconfig -a
 # /root/redis/redis-serve
-free -mh
-insmod 
+# free -mh
+# ls /dev
+
+insmod /root/penglai/penglai.ko 
+cat /proc/misc
+lsmod
+# major: 10 - misc dev; minor: 63 - specify the penglai dev
+mknod /dev/penglai_enclave_dev c 10 63 
+ls /dev
+echo Penglai Enclave Start
+echo -------------------------------------------------------
+/root/host /root/prime
+/root/host /root/count
