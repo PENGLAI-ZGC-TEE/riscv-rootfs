@@ -18,4 +18,4 @@ ls /dev
 echo Penglai Enclave Start
 echo -------------------------------------------------------
 /root/host /root/prime
-/root/host /root/count
+# /root/host /root/count
