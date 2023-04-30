@@ -46,7 +46,7 @@ dir /root/penglai 755 0 0
 file /root/penglai/penglai.ko ${RISCV_ROOTFS_HOME}/rootfsimg/build/penglai.ko 755 0 0
 file /root/prime ${RISCV_ROOTFS_HOME}/rootfsimg/build/prime 755 0 0
 file /root/host ${RISCV_ROOTFS_HOME}/rootfsimg/build/host 755 0 0
-file /root/host ${RISCV_ROOTFS_HOME}/rootfsimg/build/count 755 0 0
+# file /root/host ${RISCV_ROOTFS_HOME}/rootfsimg/build/count 755 0 0
 
 dir /etc/init.d 755 0 0
 file /etc/init.d/rcS ${RISCV_ROOTFS_HOME}/rootfsimg/rcS 755 0 0
