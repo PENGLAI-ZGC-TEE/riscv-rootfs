@@ -57,7 +57,7 @@ int enclave_ioctl_init(void)
 	}
 
 #if 1
-	sbiret = SBI_CALL_2(SBI_SM_INIT, __pa(addr), 1 << (DEFAULT_SECURE_PAGES_ORDER + RISCV_PGSHIFT));
+	sbiret = SBI_CALL_3(SBI_SM_INIT, 0, __pa(addr), 1 << (DEFAULT_SECURE_PAGES_ORDER + RISCV_PGSHIFT));
 	ret = sbiret.value;
 	//if(ret < 0)
 	if(sbiret.error)

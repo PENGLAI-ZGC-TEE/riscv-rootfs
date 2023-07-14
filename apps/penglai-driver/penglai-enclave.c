@@ -82,7 +82,7 @@ enclave_t* create_enclave(int total_pages)
 			goto free_enclave;
 		}
 
-		ret = SBI_CALL_2(SBI_SM_MEMORY_EXTEND, __pa(addr), 4096 * (1 << order) );
+		ret = SBI_CALL_3(SBI_SM_MEMORY_EXTEND, 0, __pa(addr), 4096 * (1 << order) );
 		if(ret.error)
 		{
 			printk("KERNEL MODULE: sbi call extend memory is failed\n");

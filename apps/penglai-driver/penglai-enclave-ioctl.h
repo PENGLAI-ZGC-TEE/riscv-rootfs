@@ -46,6 +46,7 @@ struct penglai_enclave_sbi_param
 	unsigned int * eid_ptr;
 	unsigned long paddr;
 	unsigned long size;
+	unsigned int enclave_class;
 	unsigned long entry_point;
 	unsigned long untrusted_ptr;
 	unsigned long untrusted_size;
