@@ -237,7 +237,7 @@ int handle_memory_extend(enclave_t * enclave)
 		printk("KERNEL MODULE: can not get free pages which order is 0x%lx", order );
 		return -1;
 	}
-	ret = SBI_CALL_2(SBI_SM_MEMORY_EXTEND, __pa(addr), count << RISCV_PGSHIFT);
+	ret = SBI_CALL_2(SBI_SM_MEMORY_EXTEND, 1, __pa(addr), count << RISCV_PGSHIFT);
 
 	return ret.value;
 }
