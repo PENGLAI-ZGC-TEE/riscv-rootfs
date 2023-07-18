@@ -32,6 +32,7 @@
 struct penglai_enclave_user_param
 {
 	unsigned long eid;
+	int enclave_class;
 	unsigned long elf_ptr;
 	long elf_size;
 	long stack_size;

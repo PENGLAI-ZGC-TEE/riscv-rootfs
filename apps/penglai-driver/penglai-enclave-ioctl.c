@@ -24,11 +24,13 @@ unsigned int total_enclave_page(int elf_size, int stack_size)
 	return total_pages;
 }
 
-int create_sbi_param(enclave_t* enclave, struct penglai_enclave_sbi_param * enclave_sbi_param,
-		unsigned long paddr, unsigned long size, unsigned long entry_point,
+int create_sbi_param(enclave_t* enclave, struct penglai_enclave_sbi_param * enclave_sbi_param, 
+		int enclave_class, unsigned long paddr, unsigned long size, unsigned long entry_point,
 		unsigned long untrusted_ptr, unsigned long untrusted_size, unsigned long free_mem)
 {
 	enclave_sbi_param -> eid_ptr = (unsigned int* )__pa(&enclave -> eid);
+	enclave_sbi_param -> enclave_class = enclave_class;
+  	printk("[S]enclave_param->enclave_class: %d; enclave_sbi_param->enclave_class: %d\n", enclave_class, enclave_sbi_param->enclave_class);
 	enclave_sbi_param -> ecall_arg0 = (unsigned long* )__pa(&enclave -> ocall_func_id);
 	enclave_sbi_param -> ecall_arg1 = (unsigned long* )__pa(&enclave -> ocall_arg0);
 	enclave_sbi_param -> ecall_arg2 = (unsigned long* )__pa(&enclave -> ocall_arg1);
@@ -97,6 +99,9 @@ int penglai_enclave_create(struct file * filep, unsigned long args)
 	struct penglai_enclave_user_param* enclave_param = (struct penglai_enclave_user_param*)args;
 	void *elf_ptr = (void*)enclave_param->elf_ptr;
 	int elf_size = 0;
+
+  	printk("[S] PLenclave->user_param.enclave_class: %d\n", enclave_param->enclave_class);
+
 	if(penglai_enclave_elfmemsize(elf_ptr, &elf_size) < 0)
 	{
 		printk("KERNEL MODULE: calculate elf_size failed\n");
@@ -116,6 +121,8 @@ int penglai_enclave_create(struct file * filep, unsigned long args)
 	total_pages = 0x1 << order;
 	if(check_eapp_memory_size(elf_size, stack_size, untrusted_mem_size) < 0)
 	{
+		printk("KERNEL MODULE: elf_size: %#lx stack_size: %#lx untrusted_mem_size: %#lx\n", elf_size, stack_size, untrusted_mem_size);
+		printk("KERNEL MODULE: max elf_size: %#lx max stack_size: %#lx max untrusted_mem_size: %#lx\n", MAX_ELF_SIZE, MAX_STACK_SIZE, MAX_UNTRUSTED_MEM_SIZE);
 		printk("KERNEL MODULE: eapp memory is out of bound \n");
 		return -1;
 	}
@@ -159,9 +166,11 @@ int penglai_enclave_create(struct file * filep, unsigned long args)
 	free_mem = get_free_mem(&(enclave->enclave_mem->free_mem));
 
 	create_sbi_param(enclave, &enclave_sbi_param,
-			(unsigned long)(enclave->enclave_mem->paddr),
+			 enclave_param->enclave_class, (unsigned long)(enclave->enclave_mem->paddr),
 			enclave->enclave_mem->size, elf_entry, DEFAULT_UNTRUSTED_PTR,
 			untrusted_mem_size, __pa(free_mem));
+
+  	printk("[S]enclave_param->enclave_class: %d; enclave_sbi_param->enclave_class: %d\n", enclave_param->enclave_class, enclave_sbi_param.enclave_class);
 
 	printk("[Penglai Driver@%s] enclave_mem->paddr:0x%lx, size:0x%lx\n",
 			__func__, (unsigned long)(enclave->enclave_mem->paddr),
@@ -237,7 +246,7 @@ int handle_memory_extend(enclave_t * enclave)
 		printk("KERNEL MODULE: can not get free pages which order is 0x%lx", order );
 		return -1;
 	}
-	ret = SBI_CALL_2(SBI_SM_MEMORY_EXTEND, 1, __pa(addr), count << RISCV_PGSHIFT);
+	ret = SBI_CALL_3(SBI_SM_MEMORY_EXTEND, 1, __pa(addr), count << RISCV_PGSHIFT);
 
 	return ret.value;
 }
