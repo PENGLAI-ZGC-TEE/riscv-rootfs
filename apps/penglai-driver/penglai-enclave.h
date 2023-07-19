@@ -65,6 +65,12 @@
 
 #define PRE_EXTEND_MONITOR_MEMORY 1
 
+typedef enum
+{
+	PMP_REGION = 0,
+	SPMP_REGION
+} enclave_class_t;
+
 /*Abstract for enclave */
 typedef struct penglai_enclave
 {
@@ -87,7 +93,7 @@ typedef struct require_sec_memory
 	unsigned long resp_size;
 } require_sec_memory_t;
 
-enclave_t* create_enclave(int total_pages);
+enclave_t* create_enclave(int total_pages, enclave_class_t enclave_class);
 int destroy_enclave(enclave_t* enclave);
 unsigned int enclave_idr_alloc(enclave_t* enclave);
 enclave_t* enclave_idr_remove(unsigned int ueid); 

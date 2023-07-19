@@ -43,7 +43,7 @@ enclave_t* get_enclave_by_id(unsigned int ueid)
 	return enclave;
 }
 
-enclave_t* create_enclave(int total_pages)
+enclave_t* create_enclave(int total_pages, enclave_class_t enclave_class)
 {
 	vaddr_t addr = 0;
 	paddr_t pa = 0;
@@ -66,7 +66,7 @@ enclave_t* create_enclave(int total_pages)
 			__func__, total_pages, order);
 	//Note: SBI_SM_ALLOC_ENCLAVE_MEM's arg is the num of bytes instead of pages
 	require_sec_memory.size = total_pages << RISCV_PGSHIFT;
-	ret = SBI_CALL_1(SBI_SM_ALLOC_ENCLAVE_MEM, __pa(&require_sec_memory));
+	ret = SBI_CALL_2(SBI_SM_ALLOC_ENCLAVE_MEM, __pa(&require_sec_memory), enclave_class);
 	pa = require_sec_memory.paddr;
 
 	if (ret.error){
@@ -82,7 +82,7 @@ enclave_t* create_enclave(int total_pages)
 			goto free_enclave;
 		}
 
-		ret = SBI_CALL_3(SBI_SM_MEMORY_EXTEND, 1, __pa(addr), 4096 * (1 << order) );
+		ret = SBI_CALL_3(SBI_SM_MEMORY_EXTEND, enclave_class, __pa(addr), 4096 * (1 << order) );
 		if(ret.error)
 		{
 			printk("KERNEL MODULE: sbi call extend memory is failed\n");
@@ -91,7 +91,7 @@ enclave_t* create_enclave(int total_pages)
 
 		//FIXME: use physical address
 		//ret = SBI_CALL_1(SBI_SM_ALLOC_ENCLAVE_MEM, &require_sec_memory);
-		ret = SBI_CALL_1(SBI_SM_ALLOC_ENCLAVE_MEM, __pa(&require_sec_memory));
+		ret = SBI_CALL_2(SBI_SM_ALLOC_ENCLAVE_MEM, __pa(&require_sec_memory), enclave_class);
 		pa = require_sec_memory.paddr;
 	}
 

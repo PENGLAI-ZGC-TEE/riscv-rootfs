@@ -32,7 +32,7 @@
 struct penglai_enclave_user_param
 {
 	unsigned long eid;
-	int enclave_class;
+	enclave_class_t enclave_class;
 	unsigned long elf_ptr;
 	long elf_size;
 	long stack_size;
@@ -47,7 +47,7 @@ struct penglai_enclave_sbi_param
 	unsigned int * eid_ptr;
 	unsigned long paddr;
 	unsigned long size;
-	unsigned int enclave_class;
+	enclave_class_t enclave_class;
 	unsigned long entry_point;
 	unsigned long untrusted_ptr;
 	unsigned long untrusted_size;
