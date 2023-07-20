@@ -56,7 +56,7 @@ int enclave_ioctl_init(void)
 		goto deregister_device;
 	}
 
-#if 1
+#if 0
 	sbiret = SBI_CALL_3(SBI_SM_INIT, 1, __pa(addr), 1 << (DEFAULT_SECURE_PAGES_ORDER + RISCV_PGSHIFT));
 	ret = sbiret.value;
 	//if(ret < 0)

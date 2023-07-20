@@ -17,5 +17,5 @@ mknod /dev/penglai_enclave_dev c 10 63
 ls /dev
 echo Penglai Enclave Start
 echo -------------------------------------------------------
-/root/host /root/prime
+/root/host /root/prime 3
 # /root/host /root/count

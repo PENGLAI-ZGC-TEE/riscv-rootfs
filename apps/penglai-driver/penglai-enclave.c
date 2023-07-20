@@ -56,6 +56,23 @@ enclave_t* create_enclave(int total_pages, enclave_class_t enclave_class)
 	struct sbiret ret;
 	unsigned long order = ilog2(total_pages-1) + 1;
 
+	addr = __get_free_pages(GFP_HIGHUSER, DEFAULT_SECURE_PAGES_ORDER);
+	if(!addr)
+	{
+		printk("[Penglai KModule]: can not get free page which order is 0x%x", DEFAULT_SECURE_PAGES_ORDER);
+		goto free_enclave;
+	}
+
+#if 1
+	ret = SBI_CALL_3(SBI_SM_INIT, enclave_class, __pa(addr), 1 << (DEFAULT_SECURE_PAGES_ORDER + RISCV_PGSHIFT));
+	//if(ret < 0)
+	if(ret.error)
+	{
+		printk("[Penglai KModule]: sbi call mm_init is failed\n");
+		goto free_enclave;
+	}
+#endif
+
 	if(!enclave || !enclave_mem || !untrusted_mem)
 	{
 		printk("KERNEL MODULE: no enough kernel memory\n");

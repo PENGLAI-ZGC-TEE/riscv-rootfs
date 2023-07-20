@@ -5,6 +5,7 @@
 #include <asm/sbi.h>
 
 #define SBI_EXT_PENGLAI_HOST            0x100100
+#define DEFAULT_SECURE_PAGES_ORDER 10
 
 //define SBI_CALL here
 #define SBI_CALL_1(func_id, arg1) 		sbi_ecall(SBI_EXT_PENGLAI_HOST, func_id, arg1, 0   , 0   ,0,0,0)
