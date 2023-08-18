@@ -100,7 +100,11 @@ int penglai_enclave_create(struct file * filep, unsigned long args)
 	void *elf_ptr = (void*)enclave_param->elf_ptr;
 	int elf_size = 0;
 
-  	printk("[S] PLenclave->user_param.enclave_class: %d\n", enclave_param->enclave_class);
+	uint64_t sstatus = csr_read(CSR_SSTATUS);
+  	printk("****** [S] CSR_SSTATUS(before set) ******: %#llx\n", sstatus);
+	csr_set(CSR_SSTATUS, 0x40000);
+	sstatus = csr_read(CSR_SSTATUS);
+  	printk("****** [S] CSR_SSTATUS(after set) ******: %#llx\n", sstatus);
 
 	if(penglai_enclave_elfmemsize(elf_ptr, &elf_size) < 0)
 	{
@@ -135,6 +139,12 @@ int penglai_enclave_create(struct file * filep, unsigned long args)
 		printk("KERNEL MODULE: cannot create enclave\n");
 		goto destroy_enclave;
 	}
+
+	sstatus = csr_read(CSR_SSTATUS);
+  	printk("****** [S] CSR_SSTATUS(after create_encalve) ******: %#llx\n", sstatus);
+	csr_set(CSR_SSTATUS, 0x40000);
+	sstatus = csr_read(CSR_SSTATUS);
+  	printk("****** [S] CSR_SSTATUS(before entering eapp_prepare) ******: %#llx\n", sstatus);
 
 	elf_entry = 0;
 	if(penglai_enclave_eapp_preprare(enclave->enclave_mem, elf_ptr, elf_size,

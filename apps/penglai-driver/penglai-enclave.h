@@ -3,6 +3,7 @@
 #include "penglai-enclave-page.h"
 #include "penglai-enclave-elfloader.h"
 #include <asm/sbi.h>
+#include <asm/csr.h>
 
 #define SBI_EXT_PENGLAI_HOST            0x100100
 #define DEFAULT_SECURE_PAGES_ORDER 10

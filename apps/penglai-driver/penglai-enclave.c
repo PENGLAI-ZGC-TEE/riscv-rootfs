@@ -56,6 +56,12 @@ enclave_t* create_enclave(int total_pages, enclave_class_t enclave_class)
 	struct sbiret ret;
 	unsigned long order = ilog2(total_pages-1) + 1;
 
+	uint64_t sstatus = csr_read(CSR_SSTATUS);
+  	printk("****** [S] CSR_SSTATUS(before set) ******: %#llx\n", sstatus);
+	csr_set(CSR_SSTATUS, 0x40000);
+	sstatus = csr_read(CSR_SSTATUS);
+  	printk("****** [S] CSR_SSTATUS(after set) ******: %#llx\n", sstatus);
+
 	addr = __get_free_pages(GFP_HIGHUSER, DEFAULT_SECURE_PAGES_ORDER);
 	if(!addr)
 	{
