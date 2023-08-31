@@ -69,8 +69,8 @@
 
 typedef enum
 {
-	PMP_REGION = 0,
-	SPMP_REGION
+	LIGHT_REGION = 0,
+	HEAVY_REGION	
 } enclave_class_t;
 
 /*Abstract for enclave */
@@ -86,6 +86,7 @@ typedef struct penglai_enclave
 	unsigned long ocall_arg1;
 	unsigned long ocall_syscall_num;
 	int is_running; // A flag to indicate whether the enclave is in the running loop
+	enclave_class_t enclave_class;
 } enclave_t;
 
 typedef struct require_sec_memory
