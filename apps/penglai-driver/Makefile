@@ -11,11 +11,15 @@ penglai-objs := penglai-enclave-driver.o \
 	penglai-enclave.o \
 	penglai-enclave-ioctl.o 
 
-LINUX_HOME=/nfs/home/pengxuanyao/Workspace/NEMU-TEE/riscv-linux
+export TEE_HOME=$(abspath ../../../../)
+LINUX_HOME=${TEE_HOME}/debian_linux_kernel
+RISCV_ROOTFS_HOME=${TEE_HOME}/riscv-rootfs
+
+# LINUX_HOME=/nfs/home/pengxuanyao/Workspace/NEMU-TEE/riscv-linux
 
 all:
 	make -C $(LINUX_HOME) ARCH=riscv M=$(shell pwd) CROSS_COMPILE=riscv64-unknown-linux-gnu- modules
-	-mkdir $(RISCV_ROOTFS_HOME)/rootfsimg/build/
+	-mkdir -p $(RISCV_ROOTFS_HOME)/rootfsimg/build/
 	-touch $(RISCV_ROOTFS_HOME)/rootfsimg/build/penglai.ko
 	ln -sf $(abspath ./penglai.ko) $(RISCV_ROOTFS_HOME)/rootfsimg/build/penglai.ko
 
