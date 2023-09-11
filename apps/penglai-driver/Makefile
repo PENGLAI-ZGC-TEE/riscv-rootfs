@@ -11,8 +11,9 @@ penglai-objs := penglai-enclave-driver.o \
 	penglai-enclave.o \
 	penglai-enclave-ioctl.o 
 
-LINUX_HOME=/nfs/home/pengxuanyao/Workspace/debian_linux_kernel
-RISCV_ROOTFS_HOME=/nfs/home/pengxuanyao/Workspace/riscv-rootfs
+export TEE_HOME=$(abspath ../../../../)
+LINUX_HOME=${TEE_HOME}/debian_linux_kernel
+RISCV_ROOTFS_HOME=${TEE_HOME}/riscv-rootfs
 
 # LINUX_HOME=/nfs/home/pengxuanyao/Workspace/NEMU-TEE/riscv-linux
 
