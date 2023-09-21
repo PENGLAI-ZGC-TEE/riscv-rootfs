@@ -37,8 +37,7 @@ int enclave_ioctl_init(void)
 {
 	int ret;
     struct device *cma_dev;
-	unsigned long cma_addr;
-    dma_addr_t cma_handle; // bus address of cma memory
+	void *cma_addr;
 	struct sbiret sbiret;
 	printk("enclave_ioctl_init...\n");
 
