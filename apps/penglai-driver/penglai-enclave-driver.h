@@ -8,9 +8,9 @@
 
 typedef struct cma_mem
 {
-    void           *cma_start_va;
+	void           *cma_start_va;
 	phys_addr_t     cma_start_pa;
-    dma_addr_t      cma_handle;  // bus address
+	dma_addr_t      cma_handle;  // bus address
 } cma_mem_t;
 
 #endif

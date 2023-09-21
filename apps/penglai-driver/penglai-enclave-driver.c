@@ -36,7 +36,7 @@ struct miscdevice enclave_dev = {
 int enclave_ioctl_init(void)
 {
 	int ret;
-    struct device *cma_dev;
+	struct device *cma_dev;
 	void *cma_addr;
 	struct sbiret sbiret;
 	printk("enclave_ioctl_init...\n");
@@ -55,11 +55,11 @@ int enclave_ioctl_init(void)
 	// addr = __get_free_pages(GFP_HIGHUSER, DEFAULT_SECURE_PAGES_ORDER);
 
 	/* [YBC] use contiguous memory allocator */
-    cma_dev = enclave_dev.this_device;
-    cma_dev->coherent_dma_mask = DMA_BIT_MASK(64); // dma device can access 64-bit address space
-    cma_dev->dma_mask = &cma_dev->coherent_dma_mask;
+	cma_dev = enclave_dev.this_device;
+	cma_dev->coherent_dma_mask = DMA_BIT_MASK(64); // dma device can access 64-bit address space
+	cma_dev->dma_mask = &cma_dev->coherent_dma_mask;
 
-    cma_addr = dma_alloc_coherent(cma_dev, CMA_SIZE, &cma_mem.cma_handle, GFP_KERNEL);
+	cma_addr = dma_alloc_coherent(cma_dev, CMA_SIZE, &cma_mem.cma_handle, GFP_KERNEL);
 	if(!cma_addr)
 	{
 		// printk("[Penglai KModule]: can not get free page which order is 0x%x", DEFAULT_SECURE_PAGES_ORDER);
@@ -67,8 +67,8 @@ int enclave_ioctl_init(void)
 		ret = -1;
 		goto deregister_device;
 	}
-    cma_mem.cma_start_va = cma_addr;
-    cma_mem.cma_start_pa = __pa(cma_addr);
+	cma_mem.cma_start_va = cma_addr;
+	cma_mem.cma_start_pa = __pa(cma_addr);
 
 #if 1
 	// sbiret = SBI_CALL_2(SBI_SM_INIT, __pa(cma_addr), 1 << (DEFAULT_SECURE_PAGES_ORDER + RISCV_PGSHIFT));
@@ -96,7 +96,7 @@ void enclave_ioctl_exit(void)
 	printk("enclave_ioctl_exit...\n");
 
 	// free cma memory
-    dma_free_coherent(enclave_dev.this_device, CMA_SIZE, cma_mem.cma_start_va, cma_mem.cma_handle);
+	dma_free_coherent(enclave_dev.this_device, CMA_SIZE, cma_mem.cma_start_va, cma_mem.cma_handle);
 
 	//TODO: free SM memory
 	/*while((addr = SBI_CALL_2(SBI_SM_FREE_ENCLAVE_MEM, &size, FREE_MAX_MEMORY)))
