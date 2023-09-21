@@ -3,6 +3,7 @@
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <linux/miscdevice.h>
+#include <linux/dma-mapping.h>
 #include "penglai-enclave-driver.h"
 #include "penglai-enclave-ioctl.h"
 
@@ -10,6 +11,8 @@ MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("enclave_ioctl");
 MODULE_AUTHOR("LuXu");
 MODULE_VERSION("enclave_ioctl");
+
+static cma_mem_t cma_mem;
 
 static int enclave_mmap(struct file* f,struct vm_area_struct *vma)
 {
@@ -33,7 +36,8 @@ struct miscdevice enclave_dev = {
 int enclave_ioctl_init(void)
 {
 	int ret;
-	unsigned long addr;
+	struct device *cma_dev;
+	void *cma_addr;
 	struct sbiret sbiret;
 	printk("enclave_ioctl_init...\n");
 
@@ -48,16 +52,27 @@ int enclave_ioctl_init(void)
 
 	/* [Dd] Should we broadcast some states (e.g., PT_area region) to other harts? */
 	/* [LX] sm will broadcast */
-	addr = __get_free_pages(GFP_HIGHUSER, DEFAULT_SECURE_PAGES_ORDER);
-	if(!addr)
+	// addr = __get_free_pages(GFP_HIGHUSER, DEFAULT_SECURE_PAGES_ORDER);
+
+	/* [YBC] use contiguous memory allocator */
+	cma_dev = enclave_dev.this_device;
+	cma_dev->coherent_dma_mask = DMA_BIT_MASK(64); // dma device can access 64-bit address space
+	cma_dev->dma_mask = &cma_dev->coherent_dma_mask;
+
+	cma_addr = dma_alloc_coherent(cma_dev, CMA_SIZE, &cma_mem.cma_handle, GFP_KERNEL);
+	if(!cma_addr)
 	{
-		printk("[Penglai KModule]: can not get free page which order is 0x%x", DEFAULT_SECURE_PAGES_ORDER);
+		// printk("[Penglai KModule]: can not get free page which order is 0x%x", DEFAULT_SECURE_PAGES_ORDER);
+		printk("[Penglai KModule] CMA allocation failed with size %ld\n", CMA_SIZE);
 		ret = -1;
 		goto deregister_device;
 	}
+	cma_mem.cma_start_va = cma_addr;
+	cma_mem.cma_start_pa = __pa(cma_addr);
 
 #if 1
-	sbiret = SBI_CALL_2(SBI_SM_INIT, __pa(addr), 1 << (DEFAULT_SECURE_PAGES_ORDER + RISCV_PGSHIFT));
+	// sbiret = SBI_CALL_2(SBI_SM_INIT, __pa(cma_addr), 1 << (DEFAULT_SECURE_PAGES_ORDER + RISCV_PGSHIFT));
+	sbiret = SBI_CALL_2(SBI_SM_INIT, __pa(cma_addr), CMA_SIZE);
 	ret = sbiret.value;
 	//if(ret < 0)
 	if(sbiret.error)
@@ -79,6 +94,9 @@ void enclave_ioctl_exit(void)
 {
 	//unsigned long size, addr, order, count;
 	printk("enclave_ioctl_exit...\n");
+
+	// free cma memory
+	dma_free_coherent(enclave_dev.this_device, CMA_SIZE, cma_mem.cma_start_va, cma_mem.cma_handle);
 
 	//TODO: free SM memory
 	/*while((addr = SBI_CALL_2(SBI_SM_FREE_ENCLAVE_MEM, &size, FREE_MAX_MEMORY)))
