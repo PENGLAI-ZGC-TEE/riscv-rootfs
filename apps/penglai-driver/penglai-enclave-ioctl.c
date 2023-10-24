@@ -120,7 +120,8 @@ int penglai_enclave_create(struct file * filep, unsigned long args)
 		return -1;
 	}
 
-
+	acquire_big_lock(__func__);
+	
 	enclave = create_enclave(total_pages);
 	if(!enclave)
 	{
@@ -156,8 +157,6 @@ int penglai_enclave_create(struct file * filep, unsigned long args)
 	enclave->kbuffer_size = ENCLAVE_DEFAULT_KBUFFER_SIZE;
 
 	free_mem = get_free_mem(&(enclave->enclave_mem->free_mem));
-
-	acquire_big_lock(__func__);
 
 	create_sbi_param(enclave, enclave_sbi_param,
 			(unsigned long)(enclave->enclave_mem->paddr),
