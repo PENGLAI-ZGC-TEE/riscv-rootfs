@@ -15,7 +15,7 @@ export TEE_HOME=$(abspath ../../../)
 LINUX_HOME?=${TEE_HOME}/debian-linux-kernel
 RISCV_ROOTFS_HOME?=${TEE_HOME}/riscv-rootfs
 
-# LINUX_HOME=/nfs/home/pengxuanyao/Workspace/NEMU-TEE/riscv-linux
+LINUX_HOME=/nfs/home/zhaoxiquan/ns-bbl/cma-riscv-linux
 
 all:
 	make -C $(LINUX_HOME) ARCH=riscv M=$(shell pwd) CROSS_COMPILE=riscv64-unknown-linux-gnu- modules
