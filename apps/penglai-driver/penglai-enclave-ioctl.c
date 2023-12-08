@@ -42,6 +42,7 @@ int create_sbi_param(enclave_t* enclave, struct penglai_enclave_sbi_param * encl
 	//enclave share mem with kernel
 	enclave_sbi_param->kbuffer = ENCLAVE_DEFAULT_KBUFFER;
 	enclave_sbi_param->kbuffer_size = enclave->kbuffer_size;
+	enclave_sbi_param->kbuffer_paddr = __pa(enclave->kbuffer);
 	return 0;
 }
 
