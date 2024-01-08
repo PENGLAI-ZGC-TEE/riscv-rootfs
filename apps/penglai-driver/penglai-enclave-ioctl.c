@@ -42,6 +42,8 @@ int create_sbi_param(enclave_t* enclave, struct penglai_enclave_sbi_param * encl
 	//enclave share mem with kernel
 	enclave_sbi_param->kbuffer = ENCLAVE_DEFAULT_KBUFFER;
 	enclave_sbi_param->kbuffer_size = enclave->kbuffer_size;
+	enclave_sbi_param->kbuffer_paddr = __pa(enclave->kbuffer);
+	printk("##### [PENGLAI Driver@%s]  kbuffer_paddr: 0x%lx ###\n", __func__, enclave_sbi_param->kbuffer_paddr);
 	return 0;
 }
 
@@ -81,7 +83,7 @@ int alloc_kbuffer(unsigned long kbuffer_size, unsigned long* kbuffer_ptr, enclav
 
 	*kbuffer_ptr = addr;
 	map_kbuffer(enclave->enclave_mem, ENCLAVE_DEFAULT_KBUFFER, __pa(addr), kbuffer_size);
-
+	printk("KERNEL MODULE: %s, addr: 0x%lx  paddr: 0x%lx\n", __func__, addr, __pa(addr));
 	return ret;
 }
 
