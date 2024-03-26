@@ -1,11 +1,12 @@
 NAME = penglai-sdk
 export PENGLAI_SDK=$(abspath ./repo)
+export RISCV_ROOTFS_HOME=$(shell pwd)/../../../riscv-rootfs
 
 .PHONY: repo clean
 REPO_PATH = repo
 $(REPO_PATH):
 	-mkdir -p $@
-	-git clone https://github.com/ICT-TEE/penglai-sdk-for-nemu.git $@
+	-git clone git@github.com:PENGLAI-ZGC-TEE/penglai-sdk-for-nemu.git $@
 	-$(MAKE) -C $(REPO_PATH)
 	-mkdir $(RISCV_ROOTFS_HOME)/rootfsimg/build 
 	-touch $(RISCV_ROOTFS_HOME)/rootfsimg/build/host
