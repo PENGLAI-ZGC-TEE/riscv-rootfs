@@ -1,5 +1,7 @@
 #include "penglai-enclave-elfloader.h"
 
+
+// 为enclave分配NOBITS节Security Memory 并建立Enclave的页表映射
 int penglai_enclave_load_NOBITS_section(enclave_mem_t* enclave_mem, void * elf_sect_addr, int elf_sect_size)
 {
 	vaddr_t addr;
@@ -21,6 +23,8 @@ int penglai_enclave_load_NOBITS_section(enclave_mem_t* enclave_mem, void * elf_s
    elf_prog_addr @ virtual addr for program begin addr
    elf_prog_size @ size of prog segment
    */
+
+// 为enclave分配Program程序段Security Memory，建立页表映射
 int penglai_enclave_load_program(enclave_mem_t* enclave_mem, vaddr_t elf_prog_infile_addr, void * elf_prog_addr, int elf_prog_size)
 {
 	vaddr_t addr;
@@ -50,6 +54,8 @@ int penglai_enclave_loadelf(enclave_mem_t*enclave_mem, void* __user elf_ptr, uns
 	struct elf_shdr elf_sect_hdr;
 	int i,  elf_prog_size;
 	vaddr_t elf_sect_ptr, elf_prog_ptr, elf_prog_addr, elf_prog_infile_addr;
+
+	// 将elfhar从用户空间拷贝到内核空间
 	if(copy_from_user(&elf_hdr, elf_ptr, sizeof(struct elfhdr)) != 0)
 	{
 		printk("KERNEL MODULE:  elf_hdr copy_from_user failed\n");
@@ -59,6 +65,7 @@ int penglai_enclave_loadelf(enclave_mem_t*enclave_mem, void* __user elf_ptr, uns
 	elf_sect_ptr = (vaddr_t) elf_ptr + elf_hdr.e_shoff;
 
 	/* Loader section */
+	// 将elf_sect从用户空间拷贝到内核空间，核心的功能是分配NOBIT部分的Enclave内存
 	for (i = 0; i < elf_hdr.e_shnum;i++)
 	{
 		if (copy_from_user(&elf_sect_hdr,(void *)elf_sect_ptr,sizeof(struct elf_shdr)))
@@ -90,6 +97,7 @@ int penglai_enclave_loadelf(enclave_mem_t*enclave_mem, void* __user elf_ptr, uns
 	/* Load program segment */
 	elf_prog_ptr = (vaddr_t) elf_ptr + elf_hdr.e_phoff;
 
+	// 将elf_prog_hdr从用户空间拷贝至内核空间，核心功能是分配program部分的内存
 	for(i = 0; i < elf_hdr.e_phnum;i++)
 	{
 		if (copy_from_user(&elf_prog_hdr,(void *)elf_prog_ptr,sizeof(struct elf_phdr)))
@@ -115,6 +123,7 @@ int penglai_enclave_loadelf(enclave_mem_t*enclave_mem, void* __user elf_ptr, uns
 	return 0;
 }
 
+// 计算elf文件占用的内存大小
 int penglai_enclave_elfmemsize(void* __user elf_ptr, int* size)
 {
 	struct elfhdr elf_hdr;
@@ -172,11 +181,13 @@ int penglai_enclave_elfmemsize(void* __user elf_ptr, int* size)
 	return 0;
 }
 
+// 将Enclave的可执行文件加载至Enclave的Security Memory中
 int penglai_enclave_eapp_preprare(enclave_mem_t* enclave_mem,  void* __user elf_ptr, unsigned long size, vaddr_t * elf_entry_point, vaddr_t stack_ptr, int stack_size)
 {
 	vaddr_t addr;
 
 	/* Init stack */
+	// 从Security Memory中分配栈内存
 	for(addr = stack_ptr - stack_size; addr < stack_ptr; addr += RISCV_PGSIZE)
 	{
 		enclave_alloc_page(enclave_mem, addr, ENCLAVE_STACK_PAGE);
@@ -191,17 +202,25 @@ int penglai_enclave_eapp_preprare(enclave_mem_t* enclave_mem,  void* __user elf_
 	return 0;
 }
 
+// 将内核分配的untrusted_mem映射至Enclave页表中
 int map_untrusted_mem(enclave_mem_t* enclave_mem, vaddr_t vaddr, paddr_t paddr, unsigned long size)
 {
 	vaddr_t addr = vaddr;
 
 	for (; addr < vaddr + size; addr+=RISCV_PGSIZE) {
+		// 建立虚拟地址和物理地址的映射，其中物理内存由内核分配，这一步只是将物理页映射至Enclave页表中
+		// 其中enclave的页表全部由Security Memory分配
 		map_va2pa(enclave_mem, addr, paddr, ENCLAVE_UNTRUSTED_PAGE);
 		paddr += RISCV_PGSIZE;
 	}
+	// map_va2pa(enclave_mem, (vaddr_t)0x1000080000, (paddr_t)0xc018d000, ENCLAVE_UNTRUSTED_PAGE);
+	// map_va2pa(enclave_mem, (vaddr_t)0x1000080000, (paddr_t)0xc0240000, ENCLAVE_UNTRUSTED_PAGE);
+	// printk("[%s] map_va2pa 0x1000080000 -> 0xc0240000 complete!\n", __func__);
 	return 0;
 }
 
+
+// 同理，将内核分配的kbuffer映射至Enclave页表中
 int map_kbuffer(enclave_mem_t* enclave_mem, vaddr_t vaddr, paddr_t paddr, unsigned long size)
 {
 	vaddr_t addr = vaddr;

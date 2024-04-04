@@ -17,5 +17,13 @@ mknod /dev/penglai_enclave_dev c 10 63
 ls /dev
 echo Penglai Enclave Start
 echo -------------------------------------------------------
-/root/host /root/prime
-# /root/host /root/count
+# uname -a
+# time /root/host /root/prime 254 | tee /root/res.txt
+# time /root/host /root/prime 1 | tee /root/res.txt
+/root/host /root/mem
+#/root/host /root/prime
+# time /root/host /root/mem 255
+
+# /root/host /root/shm_creater 1 /root/shm_mapper
+# /root/host /root/shm_mapper 1 /root/shm_creater
+# /root/host /root/shm_creater 1 /root/shm_creater

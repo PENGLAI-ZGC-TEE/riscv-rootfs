@@ -106,10 +106,16 @@ enclave_t* create_enclave(int total_pages)
 	}
 
 	addr = (vaddr_t)__va(pa);
-	size = require_sec_memory->resp_size;
+	// 添加：查看分配的安全物理内存地址
+	printk("[Penglai SDK Driver@%s] alloc_enclave_mem vaddr:0x%lx, paddr:0x%lx\n", __func__, addr, __pa(addr));
 
+	size = require_sec_memory->resp_size;
+	// 将分配的Enclave安全内存清0
+	memset((void*)addr, 0, size);
+	//初始化双向链表
 	INIT_LIST_HEAD(&enclave_mem->free_mem);
 	spin_unlock_bh(&kmalloc_enclave_lock);
+	// 将enclave 空闲内存按页管理（此时将物理地址映射成内核虚拟地址）
 	enclave_mem_int(enclave_mem, addr, size, __pa(addr));
 	spin_lock_bh(&kmalloc_enclave_lock);
 
