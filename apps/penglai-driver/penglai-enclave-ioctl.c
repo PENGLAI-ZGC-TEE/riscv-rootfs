@@ -155,8 +155,8 @@ int penglai_enclave_create(struct file * filep, unsigned long args)
 	}
 	enclave->untrusted_mem->addr = (vaddr_t)untrusted_mem_ptr;
 	enclave->untrusted_mem->size = untrusted_mem_size;
-	printk("[Penglai Driver@%s] untrusted_mem->addr:0x%lx untrusted_mem->size:0x%lx\n",
-			__func__, (vaddr_t)untrusted_mem_ptr, untrusted_mem_size);
+	// printk("[Penglai Driver@%s] untrusted_mem->addr:0x%lx untrusted_mem->size:0x%lx\n",
+	// 		__func__, (vaddr_t)untrusted_mem_ptr, untrusted_mem_size);
 
 	alloc_kbuffer(ENCLAVE_DEFAULT_KBUFFER_SIZE, &kbuffer_ptr, enclave);
 	enclave->kbuffer = (vaddr_t)kbuffer_ptr;
@@ -164,8 +164,8 @@ int penglai_enclave_create(struct file * filep, unsigned long args)
 
 	free_mem = get_free_mem(&(enclave->enclave_mem->free_mem));
 
-	printk("[Penglai Driver@%s] enclave_mem->paddr:0x%lx",
-			__func__, (unsigned long)(enclave->enclave_mem->paddr));
+	// printk("[Penglai Driver@%s] enclave_mem->paddr:0x%lx",
+	// 		__func__, (unsigned long)(enclave->enclave_mem->paddr));
 
 	create_sbi_param(enclave, enclave_sbi_param,
 			(unsigned long)(enclave->enclave_mem->paddr),

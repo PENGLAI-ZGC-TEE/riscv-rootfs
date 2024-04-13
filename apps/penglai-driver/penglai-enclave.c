@@ -107,7 +107,7 @@ enclave_t* create_enclave(int total_pages)
 
 	addr = (vaddr_t)__va(pa);
 	// 添加：查看分配的安全物理内存地址
-	printk("[Penglai SDK Driver@%s] alloc_enclave_mem vaddr:0x%lx, paddr:0x%lx\n", __func__, addr, __pa(addr));
+	// printk("[Penglai SDK Driver@%s] alloc_enclave_mem vaddr:0x%lx, paddr:0x%lx\n", __func__, addr, __pa(addr));
 
 	size = require_sec_memory->resp_size;
 	// 将分配的Enclave安全内存清0

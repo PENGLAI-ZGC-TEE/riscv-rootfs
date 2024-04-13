@@ -187,7 +187,7 @@ void enclave_mem_int(enclave_mem_t* enclave_mem, vaddr_t vaddr, int size, paddr_
 	init_free_mem(&enclave_mem->free_mem, vaddr, size / RISCV_PGSIZE);
 	enclave_mem -> vaddr = vaddr;
 	enclave_mem -> paddr = paddr;
-	printk("[Penglai SDK Driver@%s] enclave_mem->paddr:0x%lx\n", __func__, enclave_mem->paddr);
+	// printk("[Penglai SDK Driver@%s] enclave_mem->paddr:0x%lx\n", __func__, enclave_mem->paddr);
 	enclave_mem -> size = size;
 	pte = (pt_entry_t *)get_free_mem(&enclave_mem->free_mem);
 	//在内核中Enclave的根页表（基于内核的虚拟地址空间）
