@@ -49,6 +49,19 @@ file /root/host ${RISCV_ROOTFS_HOME}/rootfsimg/build/host 755 0 0
 file /root/mem ${RISCV_ROOTFS_HOME}/rootfsimg/build/mem 755 0 0
 file /root/shm_creater ${RISCV_ROOTFS_HOME}/rootfsimg/build/shm_creater 755 0 0
 file /root/shm_mapper ${RISCV_ROOTFS_HOME}/rootfsimg/build/shm_mapper 755 0 0
+
+file /root/myhost ${RISCV_ROOTFS_HOME}/rootfsimg/build/myhost 755 0 0
+
+file /root/client ${RISCV_ROOTFS_HOME}/rootfsimg/build/client 755 0 0
+file /root/server ${RISCV_ROOTFS_HOME}/rootfsimg/build/server 755 0 0
+
+file /root/producer ${RISCV_ROOTFS_HOME}/rootfsimg/build/producer 755 0 0
+file /root/consumer ${RISCV_ROOTFS_HOME}/rootfsimg/build/consumer 755 0 0
+
+file /root/source ${RISCV_ROOTFS_HOME}/rootfsimg/build/source 755 0 0
+file /root/proxy ${RISCV_ROOTFS_HOME}/rootfsimg/build/proxy 755 0 0
+file /root/dest ${RISCV_ROOTFS_HOME}/rootfsimg/build/dest 755 0 0
+
 file /root/res.txt ${RISCV_ROOTFS_HOME}/rootfsimg/build/res.txt 755 0 0
 
 dir /etc/init.d 755 0 0

@@ -33,5 +33,39 @@ echo -------------------------------------------------------
 # time /root/host /root/prime 255
 
 # /root/host /root/shm_creater 1 /root/shm_mapper
-/root/host /root/shm_mapper 1 /root/shm_creater
+# /root/host /root/shm_mapper 1 /root/shm_creater
 # /root/host /root/shm_creater 1 /root/shm_creater
+
+# /root/host /root/server 1 /root/client
+# /root/host /root/consumer 1 /root/producer
+
+# myhost 3 source proxy dest 323 1 2 client server 123 1 2 producer consumer 223 1
+
+# /root/myhost 2 /root/client /root/server 123 1
+
+# /root/myhost 2 /root/producer /root/consumer 223 1
+
+# /root/myhost 3 /root/source /root/proxy /root/dest 323 1
+
+# /root/myhost 3 /root/source /root/proxy /root/dest 323 1 2 /root/client /root/server 123 1
+# /root/myhost 2 /root/client /root/server 123 1 3 /root/source /root/proxy /root/dest 323 1 
+# /root/myhost 3 /root/source /root/proxy /root/dest 323 1 2 /root/client /root/server 123 1 2 /root/producer /root/consumer 223 1
+
+# /root/myhost 3 /root/prime /root/prime /root/prime 323 1 2 /root/prime /root/prime 123 1 2 /root/prime /root/prime 223 1
+# /root/myhost 3 /root/prime /root/prime /root/prime 323 3
+
+# /root/host /root/prime 9 /root/prime
+
+
+# myhost 3 source proxy dest 1 2 client server 1 2 producer consumer 1
+
+# /root/myhost 2 /root/client /root/server 3
+
+# /root/myhost 2 /root/producer /root/consumer 3
+
+# /root/myhost 3 /root/source /root/proxy /root/dest 3
+
+# /root/myhost 3 /root/source /root/proxy /root/dest 1 2 /root/client /root/server 1
+# /root/myhost 2 /root/client /root/server 1 3 /root/source /root/proxy /root/dest 1 
+# host 一组中有几个Enclave 1 2 3
+/root/myhost 3 /root/source /root/proxy /root/dest 3 2 /root/client /root/server 3 2 /root/producer /root/consumer 3

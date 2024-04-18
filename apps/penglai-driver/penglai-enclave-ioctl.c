@@ -45,6 +45,8 @@ int create_sbi_param(enclave_t* enclave, struct penglai_enclave_sbi_param * encl
 	enclave_sbi_param->kbuffer = ENCLAVE_DEFAULT_KBUFFER;
 	enclave_sbi_param->kbuffer_size = enclave->kbuffer_size;
 	enclave_sbi_param->kbuffer_paddr = __pa(enclave->kbuffer);
+	enclave_sbi_param->key = enclave->key;
+	enclave_sbi_param->rw_size = enclave->rw_size;
 	return 0;
 }
 
@@ -161,6 +163,8 @@ int penglai_enclave_create(struct file * filep, unsigned long args)
 	alloc_kbuffer(ENCLAVE_DEFAULT_KBUFFER_SIZE, &kbuffer_ptr, enclave);
 	enclave->kbuffer = (vaddr_t)kbuffer_ptr;
 	enclave->kbuffer_size = ENCLAVE_DEFAULT_KBUFFER_SIZE;
+	enclave->key = enclave_param->key;
+	enclave->rw_size = enclave_param->rw_size;
 
 	free_mem = get_free_mem(&(enclave->enclave_mem->free_mem));
 
@@ -346,7 +350,7 @@ int penglai_enclave_run(struct file *filep, unsigned long args)
 	{
 		if (ret.value == ENCLAVE_TIMER_IRQ)
 		{
-			printk("[Driver@penglai_enclave_run] ENCLAVE_TIMER_IRQ");
+			// printk("[Driver@penglai_enclave_run] ENCLAVE_TIMER_IRQ");
 			schedule();
 			ret = SBI_CALL_3(SBI_SM_RESUME_ENCLAVE, enclave->eid, RESUME_FROM_TIMER_IRQ, get_cycles64() + DEFAULT_CLOCK_DELAY);
 		}

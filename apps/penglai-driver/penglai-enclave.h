@@ -78,6 +78,8 @@ typedef struct penglai_enclave
 	unsigned long ocall_arg1;
 	unsigned long ocall_syscall_num;
 	int is_running; // A flag to indicate whether the enclave is in the running loop
+	unsigned long key;
+  	unsigned long rw_size;
 } enclave_t;
 
 typedef struct require_sec_memory

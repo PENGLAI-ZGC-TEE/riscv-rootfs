@@ -22,12 +22,12 @@
 	_IOW(PENGLAI_ENCLAVE_IOC_MAGIC, 0x06, struct penglai_enclave_user_param)
 
 
-#define DEFAULT_CLOCK_DELAY 100000
-#define DEFAULT_UNTRUSTED_PTR   0x0000001000000000
-#define ENCLAVE_DEFAULT_KBUFFER_SIZE              0x1000UL
-#define ENCLAVE_DEFAULT_KBUFFER         0xffffffe000000000UL
+#define DEFAULT_CLOCK_DELAY 						100000
+#define DEFAULT_UNTRUSTED_PTR   					0x0000001000000000
+#define ENCLAVE_DEFAULT_KBUFFER_SIZE              	0x1000UL
+#define ENCLAVE_DEFAULT_KBUFFER         			0xffffffe000000000UL
 
-#define USER_PARAM_RESUME_FROM_CUSTOM_OCALL		1000
+#define USER_PARAM_RESUME_FROM_CUSTOM_OCALL			1000
 
 struct penglai_enclave_user_param
 {
@@ -39,6 +39,8 @@ struct penglai_enclave_user_param
 	long untrusted_mem_size;
 	long ocall_buf_size;
 	int resume_type;
+	unsigned long key;
+    unsigned long rw_size;
 };
 
 struct penglai_enclave_sbi_param
@@ -58,15 +60,16 @@ struct penglai_enclave_sbi_param
 	unsigned long *ecall_arg1;
 	unsigned long *ecall_arg2;
 	unsigned long *ecall_arg3;
-
+	unsigned long key;
+  	unsigned long rw_size;
 };
 
 typedef unsigned char byte;
 
-#define MD_SIZE 64
-#define MAX_ELF_SIZE 512*1024*1024
-#define MAX_STACK_SIZE 64*1024*1024
-#define MAX_UNTRUSTED_MEM_SIZE 16*1024*1024
+#define MD_SIZE 					64
+#define MAX_ELF_SIZE 				512*1024*1024
+#define MAX_STACK_SIZE 				64*1024*1024
+#define MAX_UNTRUSTED_MEM_SIZE 		16*1024*1024
 
 //TODO: 64?
 #define PRIVATE_KEY_SIZE       32
