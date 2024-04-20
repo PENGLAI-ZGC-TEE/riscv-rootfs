@@ -20,10 +20,8 @@ vaddr_t get_free_mem(struct list_head* free_mem)
 	return vaddr;
 }
 
-
 static void put_free_page(struct list_head* free_mem, vaddr_t vaddr)
 {
-	// 管理Enclave空闲页的数据结构free_mem_t在内核空间？
 	struct free_mem_t* page = kmalloc(sizeof(struct free_mem_t),GFP_KERNEL);
 	page->vaddr = vaddr;
 	list_add_tail(&page->free_mem_list, free_mem);
@@ -31,7 +29,6 @@ static void put_free_page(struct list_head* free_mem, vaddr_t vaddr)
 	return;
 }
 
-// 将Enclave空闲的内存按照页为单位，使用双向链表（头插法）进行管理
 void init_free_mem( struct list_head* free_mem, vaddr_t base, unsigned int count)
 {
 	vaddr_t cur;
@@ -97,7 +94,6 @@ static inline int get_pt_index(vaddr_t vaddr, int level)
 	return index & ((1 << RISCV_PGLEVEL_BITS) - 1) ;
 }
 
-// 申请下一级页表，并将物理地址信息填入pte
 static  inline int create_ptd_page(struct list_head* free_mem,pt_entry_t * pte)
 {
 	vaddr_t addr = get_free_mem(free_mem);
@@ -123,11 +119,9 @@ static pt_entry_t * walk_enclave_pt(struct list_head* free_mem, pt_entry_t* encl
 		{
 			if(create)
 			{
-				// 申请下一级页表，并将物理地址信息填入
 				if(create_ptd_page(free_mem, &pgdir[pt_index]) < 0)
 					return NULL;
 				else
-					// 取出PTE(下一级页表)的信息放入pt_entry
 					pt_entry = pgdir[pt_index];
 			}
 			else
@@ -158,10 +152,8 @@ static inline pt_entry_t* clear_enclave_pt(pt_entry_t * enclave_root_pt, vaddr_t
 	return &pgdir[get_pt_index(vaddr , RISCV_PT_LEVEL - 1)];
 }
 
-// 分配安全物理页，创建附有特定权限的TEM，并在Enclave内建立页表映射
 vaddr_t enclave_alloc_page(enclave_mem_t*enclave_mem, vaddr_t vaddr, unsigned long flags)
 {
-	// 返回的虚拟页地址和物理页地址直接的关系是什么？
 	vaddr_t free_page = get_free_mem(&enclave_mem->free_mem);
 	pt_entry_t *pte = walk_enclave_pt(&enclave_mem->free_mem, enclave_mem -> enclave_root_pt, vaddr, true);
 	unsigned long ppn = va2ppn((vaddr_t)free_page);
@@ -170,7 +162,6 @@ vaddr_t enclave_alloc_page(enclave_mem_t*enclave_mem, vaddr_t vaddr, unsigned lo
 	return free_page;
 }
 
-// 根据虚拟地址建立页表，并将物理页映射至改页表中
 vaddr_t map_va2pa(enclave_mem_t* enclave_mem, vaddr_t vaddr, paddr_t paddr, unsigned long flags)
 {
 	pt_entry_t *pte = walk_enclave_pt(&enclave_mem->free_mem, enclave_mem -> enclave_root_pt, vaddr, true);
@@ -179,18 +170,14 @@ vaddr_t map_va2pa(enclave_mem_t* enclave_mem, vaddr_t vaddr, paddr_t paddr, unsi
 	return vaddr;
 }
 
-
-// 
 void enclave_mem_int(enclave_mem_t* enclave_mem, vaddr_t vaddr, int size, paddr_t paddr)
 {
 	pt_entry_t *pte;
 	init_free_mem(&enclave_mem->free_mem, vaddr, size / RISCV_PGSIZE);
 	enclave_mem -> vaddr = vaddr;
 	enclave_mem -> paddr = paddr;
-	// printk("[Penglai SDK Driver@%s] enclave_mem->paddr:0x%lx\n", __func__, enclave_mem->paddr);
 	enclave_mem -> size = size;
 	pte = (pt_entry_t *)get_free_mem(&enclave_mem->free_mem);
-	//在内核中Enclave的根页表（基于内核的虚拟地址空间）
 	enclave_mem -> enclave_root_pt = pte;
 	/*
 FIXME: create two special pages in enclave(the record for dynamic allocation pages)

@@ -32,11 +32,9 @@ typedef unsigned long pt_entry_t;
 #define ENCLAVE_UNTRUSTED_PAGE PTE_D | PTE_A | PTE_R | PTE_W | PTE_U
 #define ENCLAVE_KBUFFER_PAGE PTE_D | PTE_A | PTE_R | PTE_W | PTE_U
 
-//内核中enclave内存的抽象数据结构（将申请的物理内存映射到内核的虚拟地址空间中）
 /* Abstract for enclave memory (secure memory) */
 struct enclave_mem
 {
-	//内存根页表的地址是物理地址
 	pt_entry_t* enclave_root_pt;
 	struct list_head free_mem;
 	unsigned long size;

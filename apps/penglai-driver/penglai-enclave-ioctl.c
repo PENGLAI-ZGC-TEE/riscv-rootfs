@@ -34,8 +34,6 @@ int create_sbi_param(enclave_t* enclave, struct penglai_enclave_sbi_param * encl
 	enclave_sbi_param -> ecall_arg2 = (unsigned long* )__pa(&enclave -> ocall_arg1);
 	enclave_sbi_param -> ecall_arg3 = (unsigned long* )__pa(&enclave -> ocall_syscall_num);
 	enclave_sbi_param -> paddr = paddr;
-	printk("[Penglai Driver@%s] enclave_mem->paddr:0x%lx",
-			__func__, (unsigned long)(enclave_sbi_param -> paddr));
 	enclave_sbi_param -> size = size;
 	enclave_sbi_param -> entry_point = entry_point;
 	enclave_sbi_param -> untrusted_ptr = untrusted_ptr;
@@ -44,13 +42,11 @@ int create_sbi_param(enclave_t* enclave, struct penglai_enclave_sbi_param * encl
 	//enclave share mem with kernel
 	enclave_sbi_param->kbuffer = ENCLAVE_DEFAULT_KBUFFER;
 	enclave_sbi_param->kbuffer_size = enclave->kbuffer_size;
-	enclave_sbi_param->kbuffer_paddr = __pa(enclave->kbuffer);
 	enclave_sbi_param->key = enclave->key;
 	enclave_sbi_param->rw_size = enclave->rw_size;
 	return 0;
 }
 
-//在内核中分配untrusted_mem物理页，并在Enclave中创建页表映射
 int alloc_untrusted_mem(unsigned long untrusted_mem_size, unsigned long* untrusted_mem_ptr, enclave_t* enclave)
 {
 	int ret = 0;
@@ -112,7 +108,7 @@ int penglai_enclave_create(struct file * filep, unsigned long args)
 	long untrusted_mem_size = enclave_param->untrusted_mem_size;
 	unsigned long untrusted_mem_ptr = enclave_param->untrusted_mem_ptr;
 	unsigned long kbuffer_ptr = ENCLAVE_DEFAULT_KBUFFER;
-	struct penglai_enclave_sbi_param *enclave_sbi_param = kmalloc(sizeof(struct penglai_enclave_sbi_param), GFP_KERNEL);
+	struct penglai_enclave_sbi_param enclave_sbi_param;
 	enclave_t* enclave;
 	unsigned int total_pages = total_enclave_page(elf_size, stack_size);
 	unsigned long free_mem, elf_entry;
@@ -127,8 +123,7 @@ int penglai_enclave_create(struct file * filep, unsigned long args)
 	}
 
 	acquire_big_lock(__func__);
-	
-	//调用sm_alloc_enclave_mem, 为Enclave分配安全内存, 建立根页表
+
 	enclave = create_enclave(total_pages);
 	if(!enclave)
 	{
@@ -137,7 +132,6 @@ int penglai_enclave_create(struct file * filep, unsigned long args)
 	}
 
 	elf_entry = 0;
-	//将ELF文件加载进Enclave的安全内存
 	if(penglai_enclave_eapp_preprare(enclave->enclave_mem, elf_ptr, elf_size,
 				&elf_entry, STACK_POINT, stack_size))
 	{
@@ -157,8 +151,8 @@ int penglai_enclave_create(struct file * filep, unsigned long args)
 	}
 	enclave->untrusted_mem->addr = (vaddr_t)untrusted_mem_ptr;
 	enclave->untrusted_mem->size = untrusted_mem_size;
-	// printk("[Penglai Driver@%s] untrusted_mem->addr:0x%lx untrusted_mem->size:0x%lx\n",
-	// 		__func__, (vaddr_t)untrusted_mem_ptr, untrusted_mem_size);
+	printk("[Penglai Driver@%s] untrusted_mem->addr:0x%lx untrusted_mem->size:0x%lx\n",
+			__func__, (vaddr_t)untrusted_mem_ptr, untrusted_mem_size);
 
 	alloc_kbuffer(ENCLAVE_DEFAULT_KBUFFER_SIZE, &kbuffer_ptr, enclave);
 	enclave->kbuffer = (vaddr_t)kbuffer_ptr;
@@ -168,10 +162,7 @@ int penglai_enclave_create(struct file * filep, unsigned long args)
 
 	free_mem = get_free_mem(&(enclave->enclave_mem->free_mem));
 
-	// printk("[Penglai Driver@%s] enclave_mem->paddr:0x%lx",
-	// 		__func__, (unsigned long)(enclave->enclave_mem->paddr));
-
-	create_sbi_param(enclave, enclave_sbi_param,
+	create_sbi_param(enclave, &enclave_sbi_param,
 			(unsigned long)(enclave->enclave_mem->paddr),
 			enclave->enclave_mem->size, elf_entry, DEFAULT_UNTRUSTED_PTR,
 			untrusted_mem_size, __pa(free_mem));
@@ -180,7 +171,7 @@ int penglai_enclave_create(struct file * filep, unsigned long args)
 			__func__, (unsigned long)(enclave->enclave_mem->paddr),
 			enclave->enclave_mem->size);
 
-	ret = SBI_CALL_1(SBI_SM_CREATE_ENCLAVE, __pa(enclave_sbi_param));
+	ret = SBI_CALL_1(SBI_SM_CREATE_ENCLAVE, __pa(&enclave_sbi_param));
 
 	//if(ret < 0)
 	if(ret.error)
@@ -194,7 +185,6 @@ int penglai_enclave_create(struct file * filep, unsigned long args)
 	enclave->is_running = 0; //clear the flag
 
 	release_big_lock(__func__);
-	kfree(enclave_sbi_param);
 
 	return ret.value;
 
@@ -204,7 +194,6 @@ destroy_enclave:
 		destroy_enclave(enclave);
 	}
 	release_big_lock(__func__);
-	if(enclave_sbi_param) kfree(enclave_sbi_param);
 
 	return -EFAULT;
 }
@@ -293,7 +282,6 @@ int handle_syscall(enclave_t* enclave, unsigned long ocall_syscall_num)
 
 int penglai_enclave_run(struct file *filep, unsigned long args)
 {
-	// printk("[penglai-enclave-ioctl.c] %s invoked!", __func__);
 	struct penglai_enclave_user_param *enclave_param = (struct penglai_enclave_user_param*) args;
 	unsigned long eid = enclave_param ->eid;
 	unsigned int enclave_eid; //this eid is not equal to eid
@@ -350,7 +338,6 @@ int penglai_enclave_run(struct file *filep, unsigned long args)
 	{
 		if (ret.value == ENCLAVE_TIMER_IRQ)
 		{
-			// printk("[Driver@penglai_enclave_run] ENCLAVE_TIMER_IRQ");
 			schedule();
 			ret = SBI_CALL_3(SBI_SM_RESUME_ENCLAVE, enclave->eid, RESUME_FROM_TIMER_IRQ, get_cycles64() + DEFAULT_CLOCK_DELAY);
 		}
@@ -427,8 +414,6 @@ destroy_enclave:
 int penglai_enclave_attest(struct file * filep, unsigned long args)
 {
 	struct penglai_enclave_ioctl_attest_enclave * enclave_param = (struct penglai_enclave_ioctl_attest_enclave*) args;
-	struct report_t *report = kmalloc(sizeof(struct report_t), GFP_KERNEL);
-
 	unsigned long eid = enclave_param->eid;
 	enclave_t * enclave;
 	struct sbiret ret = {0};
@@ -443,13 +428,11 @@ int penglai_enclave_attest(struct file * filep, unsigned long args)
 		goto out;
 	}
 
-	ret = SBI_CALL_3(SBI_SM_ATTEST_ENCLAVE, enclave->eid, __pa(report), enclave_param->nonce);
-	enclave_param->report = *report;
+	ret = SBI_CALL_3(SBI_SM_ATTEST_ENCLAVE, enclave->eid, __pa(&(enclave_param->report)), enclave_param->nonce);
 	retval = ret.value;
 
 out:
 	release_big_lock(__func__);
- 	kfree(report);
 	return retval;
 }
 
