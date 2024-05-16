@@ -15,7 +15,8 @@ lsmod
 # major: 10 - misc dev; minor: 63 - specify the penglai dev
 mknod /dev/penglai_enclave_dev c 10 63 
 ls /dev
+ls /root
 echo Penglai Enclave Start
 echo -------------------------------------------------------
-/root/host /root/prime
+/root/host /root/attack
 # /root/host /root/count
