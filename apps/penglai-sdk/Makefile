@@ -5,7 +5,7 @@ export PENGLAI_SDK=$(abspath ./repo)
 REPO_PATH = repo
 $(REPO_PATH):
 	-mkdir -p $@
-	-git clone git@github.com:DASICS-ICT/penglai-sdk-for-nemu.git $@
+	-git clone -b zgc-lab-demo git@github.com:PENGLAI-ZGC-TEE/penglai-sdk-for-nemu.git $@
 	-$(MAKE) -C $(REPO_PATH)
 	-mkdir $(RISCV_ROOTFS_HOME)/rootfsimg/build 
 	-touch $(RISCV_ROOTFS_HOME)/rootfsimg/build/host
