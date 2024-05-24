@@ -10,9 +10,8 @@ $(REPO_PATH):
 	-mkdir $(RISCV_ROOTFS_HOME)/rootfsimg/build 
 	-touch $(RISCV_ROOTFS_HOME)/rootfsimg/build/host
 	-touch $(RISCV_ROOTFS_HOME)/rootfsimg/build/attack
-	ln -sf $(abspath repo/demo/host/host) $(RISCV_ROOTFS_HOME)/rootfsimg/build/host
-	ln -sf $(abspath repo/demo/attack/attack) $(RISCV_ROOTFS_HOME)/rootfsimg/build/attack
-
+	ln -sf $(abspath repo/demo/zgc-lab-demo/host_malware/host_malware) $(RISCV_ROOTFS_HOME)/rootfsimg/build/host
+	ln -sf $(abspath repo/demo/zgc-lab-demo/fdi_attack/fdi_attack) $(RISCV_ROOTFS_HOME)/rootfsimg/build/attack
 
 clean: 
 	$(MAKE) -C $(REPO_PATH) clean
