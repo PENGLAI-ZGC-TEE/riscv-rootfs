@@ -50,6 +50,9 @@ struct penglai_enclave_sbi_param
 	unsigned long untrusted_ptr;
 	unsigned long untrusted_size;
 	unsigned long free_mem;
+	unsigned long maintext_start;
+	unsigned long maintext_end;
+	unsigned long fdi_enable;
 	//enclave shared mem with kernel
 	unsigned long kbuffer;
 	unsigned long kbuffer_paddr;

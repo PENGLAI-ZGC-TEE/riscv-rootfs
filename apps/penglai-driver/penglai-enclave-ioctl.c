@@ -143,6 +143,10 @@ int penglai_enclave_create(struct file * filep, unsigned long args)
 		goto destroy_enclave;
 	}
 
+	// FDI initialize
+	printk("[Penglai Driver@%s] fdi_enclave_eapp_preprare\n", __func__);
+	fdi_enclave_eapp_preprare(elf_ptr, enclave_sbi_param);
+
 	untrusted_mem_size = 0x1 << (ilog2(untrusted_mem_size - 1) + 1);
 	if((untrusted_mem_ptr == 0) && (untrusted_mem_size > 0))
 	{

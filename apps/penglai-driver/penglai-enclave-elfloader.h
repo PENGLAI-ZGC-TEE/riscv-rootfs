@@ -22,4 +22,10 @@ int map_kbuffer(
 		unsigned long size);
 int penglai_enclave_elfmemsize(void* __user elf_ptr, int* size);
 
+struct penglai_enclave_sbi_param;
+int fdi_enclave_eapp_preprare(void* __user elf_ptr, struct penglai_enclave_sbi_param * enclave_sbi_param);
+
+#define MAX_SETTOR_NAME_LENGTH 512
+
+
 #endif
