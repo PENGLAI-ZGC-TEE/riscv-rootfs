@@ -178,7 +178,7 @@ int penglai_enclave_create(struct file * filep, unsigned long args)
 	}
 
 	enclave_param->eid = enclave_idr_alloc(enclave);
-
+	printk("penglai ioctl eid = %ld.\n", enclave_param->eid);
 	enclave->is_running = 0; //clear the flag
 
 	release_big_lock(__func__);
@@ -597,6 +597,52 @@ out:
 	return retval;
 }
 
+
+int penglai_enclave_write_shm(struct file * filep, unsigned long args){
+	struct host_enclave_shm_param* shm_param = (struct host_enclave_shm_param*) args;
+	unsigned long eid = shm_param ->eid;
+	enclave_t * enclave;
+	int retval = 0;
+
+	acquire_big_lock(__func__);
+	enclave = get_enclave_by_id(eid);
+	if (!enclave)
+	{
+		printk("KERNEL MODULE: enclave is not exist \n");
+		retval = -EINVAL;
+		goto out;
+	}
+	copy_from_user(enclave->kbuffer + 0x1000, shm_param->ptr, shm_param->size);
+	// copy_to_user(shm_param->kbuffer, &enclave->kbuffer, sizeof(vaddr_t));
+	shm_param->kbuffer = enclave->kbuffer;
+out:
+	release_big_lock(__func__);
+	return retval;
+}
+
+
+int penglai_enclave_read_shm(struct file * filep, unsigned long args){
+	struct host_enclave_shm_param* shm_param = (struct host_enclave_shm_param*) args;
+	// unsigned long eid = shm_param ->eid;
+	// enclave_t * enclave;
+	int retval = 0;
+
+	// acquire_big_lock(__func__);
+	// enclave = get_enclave_by_id(eid);
+	// if (!enclave)
+	// {
+	// 	printk("KERNEL MODULE: enclave is not exist \n");
+	// 	retval = -EINVAL;
+	// 	goto out;
+	// }
+	// copy_to_user(enclave->kbuffer + 0x1000, shm_param->ptr, shm_param->size);
+	copy_to_user(shm_param->ptr, shm_param->kbuffer + 0x1000, shm_param->size);
+
+out:
+	// release_big_lock(__func__);
+	return retval;
+}
+
 long penglai_enclave_ioctl(struct file* filep, unsigned int cmd, unsigned long args)
 {
 	char ioctl_data[1024];
@@ -635,6 +681,12 @@ long penglai_enclave_ioctl(struct file* filep, unsigned int cmd, unsigned long a
 			break;
 		case PENGLAI_ENCLAVE_IOC_DESTROY_ENCLAVE:
 			ret = penglai_enclave_destroy(filep, (unsigned long)ioctl_data);
+			break;
+		case PENGLAI_ENCLAVE_IOC_WRITE_SHM:
+			ret = penglai_enclave_write_shm(filep, (unsigned long)ioctl_data);
+			break;
+		case PENGLAI_ENCLAVE_IOC_READ_SHM:
+			ret = penglai_enclave_read_shm(filep, (unsigned long)ioctl_data);
 			break;
 		case PENGLAI_ENCLAVE_IOC_DEBUG_PRINT:
 			sbiret = SBI_CALL_1(SBI_SM_DEBUG_PRINT, 0);
