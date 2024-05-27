@@ -44,9 +44,10 @@ slink /init /bin/busybox 755 0 0
 # penglai driver
 dir /root/penglai 755 0 0
 file /root/penglai/penglai.ko ${RISCV_ROOTFS_HOME}/rootfsimg/build/penglai.ko 755 0 0
-file /root/host ${RISCV_ROOTFS_HOME}/rootfsimg/build/host 755 0 0
+file /root/host_malware ${RISCV_ROOTFS_HOME}/rootfsimg/build/host_malware 755 0 0
 # file /root/host ${RISCV_ROOTFS_HOME}/rootfsimg/build/count 755 0 0
-file /root/attack ${RISCV_ROOTFS_HOME}/rootfsimg/build/attack 755 0 0
+file /root/fdi_attack_origin ${RISCV_ROOTFS_HOME}/rootfsimg/build/fdi_attack_origin 755 0 0
+# file /root/fdi_attack_defend ${RISCV_ROOTFS_HOME}/rootfsimg/build/fdi_attack_defend 755 0 0
 
 dir /etc/init.d 755 0 0
 file /etc/init.d/rcS ${RISCV_ROOTFS_HOME}/rootfsimg/rcS 755 0 0
