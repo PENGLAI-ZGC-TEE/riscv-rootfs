@@ -21,10 +21,16 @@
 #define PENGLAI_ENCLAVE_IOC_DEBUG_PRINT \
 	_IOW(PENGLAI_ENCLAVE_IOC_MAGIC, 0x06, struct penglai_enclave_user_param)
 
+#define PENGLAI_ENCLAVE_IOC_WRITE_SHM \
+  _IOW(PENGLAI_ENCLAVE_IOC_MAGIC, 0x07, struct host_enclave_shm_param)
+
+#define PENGLAI_ENCLAVE_IOC_READ_SHM \
+  _IOW(PENGLAI_ENCLAVE_IOC_MAGIC, 0x08, struct host_enclave_shm_param)
+
 
 #define DEFAULT_CLOCK_DELAY 100000
 #define DEFAULT_UNTRUSTED_PTR   0x0000001000000000
-#define ENCLAVE_DEFAULT_KBUFFER_SIZE              0x1000UL
+#define ENCLAVE_DEFAULT_KBUFFER_SIZE              0x2000UL
 #define ENCLAVE_DEFAULT_KBUFFER         0xffffffe000000000UL
 
 #define USER_PARAM_RESUME_FROM_CUSTOM_OCALL		1000
@@ -39,6 +45,13 @@ struct penglai_enclave_user_param
 	long untrusted_mem_size;
 	long ocall_buf_size;
 	int resume_type;
+};
+
+struct host_enclave_shm_param{
+  unsigned long eid;
+  void* ptr;
+  vaddr_t kbuffer;
+  int size;
 };
 
 struct penglai_enclave_sbi_param
