@@ -11,7 +11,7 @@ $(REPO_PATH):
 	-touch $(RISCV_ROOTFS_HOME)/rootfsimg/build/host_malware
 	-touch $(RISCV_ROOTFS_HOME)/rootfsimg/build/fdi_attack_origin
 	-touch $(RISCV_ROOTFS_HOME)/rootfsimg/build/fdi_attack_defend
-	-touch $(RISCV_ROOTFS_HOME)/rootfsimg/build/rootfsimg/build/payload.bin
+	-touch $(RISCV_ROOTFS_HOME)/rootfsimg/build/payload.bin
 	ln -sf $(abspath repo/demo/zgc-lab-demo/host_malware/host_malware) $(RISCV_ROOTFS_HOME)/rootfsimg/build/host_malware
 	ln -sf $(abspath repo/demo/zgc-lab-demo/host_malware/payload.bin) $(RISCV_ROOTFS_HOME)/rootfsimg/build/payload.bin
 	ln -sf $(abspath repo/demo/zgc-lab-demo/fdi_attack_origin/fdi_attack_origin) $(RISCV_ROOTFS_HOME)/rootfsimg/build/fdi_attack_origin
