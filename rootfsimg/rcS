@@ -18,6 +18,8 @@ ls /dev
 ls /root
 echo Penglai Enclave Start
 echo -------------------------------------------------------
-/root/host_malware /root/fdi_attack_origin
-/root/host_malware /root/fdi_attack_defend
+#/root/host_malware /root/fdi_attack_origin
+#/root/host_malware /root/fdi_attack_defend
 # /root/host /root/count
+/root/host_malware 0x3
+/root/host_malware 0x4
