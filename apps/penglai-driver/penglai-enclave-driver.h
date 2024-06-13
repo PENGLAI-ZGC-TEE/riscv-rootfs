@@ -3,8 +3,8 @@
 
 #define DEFAULT_SECURE_PAGES_ORDER 10
 /* the size of cma area */
-#define CMA_SHIFT	30
-#define CMA_SIZE    (1UL << CMA_SHIFT) // 1 GB
+#define CMA_SHIFT	24	
+#define CMA_SIZE    (1UL << CMA_SHIFT) // 16 MB
 
 typedef struct cma_mem
 {
