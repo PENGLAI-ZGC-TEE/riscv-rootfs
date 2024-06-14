@@ -38,6 +38,7 @@ int enclave_ioctl_init(void)
 	int ret;
 	struct device *cma_dev;
 	void *cma_addr;
+	unsigned long addr;
 	struct sbiret sbiret;
 	printk("enclave_ioctl_init...\n");
 
@@ -52,13 +53,19 @@ int enclave_ioctl_init(void)
 
 	/* [Dd] Should we broadcast some states (e.g., PT_area region) to other harts? */
 	/* [LX] sm will broadcast */
-	// addr = __get_free_pages(GFP_HIGHUSER, DEFAULT_SECURE_PAGES_ORDER);
+	 addr = __get_free_pages(GFP_HIGHUSER, DEFAULT_SECURE_PAGES_ORDER);
+	if(!addr)
+	{
+		printk("[Penglai KModule]: can not get free page which order is 0x%x", DEFAULT_SECURE_PAGES_ORDER);
+		ret = -1;
+		goto deregister_device;
+	}
 
+#if 0
 	/* [YBC] use contiguous memory allocator */
 	cma_dev = enclave_dev.this_device;
 	cma_dev->coherent_dma_mask = DMA_BIT_MASK(64); // dma device can access 64-bit address space
 	cma_dev->dma_mask = &cma_dev->coherent_dma_mask;
-
 	cma_addr = dma_alloc_coherent(cma_dev, CMA_SIZE, &cma_mem.cma_handle, GFP_KERNEL);
 	if(!cma_addr)
 	{
@@ -69,15 +76,15 @@ int enclave_ioctl_init(void)
 	}
 	cma_mem.cma_start_va = cma_addr;
 	cma_mem.cma_start_pa = __pa(cma_addr);
-
+#endif
 #if 1
-	// sbiret = SBI_CALL_2(SBI_SM_INIT, __pa(cma_addr), 1 << (DEFAULT_SECURE_PAGES_ORDER + RISCV_PGSHIFT));
-	sbiret = SBI_CALL_2(SBI_SM_INIT, __pa(cma_addr), CMA_SIZE);
+	sbiret = SBI_CALL_2(SBI_SM_INIT, __pa(addr), 1 << (DEFAULT_SECURE_PAGES_ORDER + RISCV_PGSHIFT));
+	//sbiret = SBI_CALL_2(SBI_SM_INIT, __pa(cma_addr), CMA_SIZE);
 	ret = sbiret.value;
 	//if(ret < 0)
 	if(sbiret.error)
 	{
-		printk("[Penglai KModule]: sbi call mm_init is failed\n");
+		printk("[Penglai KModule]: sbi call mm_init has failed, paddr: %lx, size: %lx\n", __pa(cma_addr), CMA_SIZE);
 		goto deregister_device;
 	}
 #endif
