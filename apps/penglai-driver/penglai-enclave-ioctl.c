@@ -289,6 +289,7 @@ int penglai_enclave_run(struct file *filep, unsigned long args)
 	long ocall_buf_size = 0;
 	unsigned long untrusted_mem_ptr = enclave_param->untrusted_mem_ptr;
 	unsigned long ocall_func_id;
+	unsigned long ocall_ta_feature_pa;
 	struct sbiret ret = {0};
 	int retval = 0;
 	int resume_id = 0;
@@ -365,6 +366,14 @@ int penglai_enclave_run(struct file *filep, unsigned long args)
 					}
 					printk("[Penglai Driver@%s] return user for ocall \n", __func__);
 					return RETURN_USER_FOR_OCALL;
+				}
+				case OCALL_NUM_1_ATTACK:
+				{
+					//translate pa to va and access the Enclave memory in Driver
+					ocall_ta_feature_pa = enclave->ocall_arg0;
+					printk("face feature physical address: 0x%lx \n", ocall_ta_feature_pa);
+					printk("first face feature data: %lx \n", *((char *) __va(ocall_ta_feature_pa)));
+					break;
 				}
 				default:
 				{
