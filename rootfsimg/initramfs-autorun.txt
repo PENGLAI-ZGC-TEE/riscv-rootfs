@@ -46,7 +46,17 @@ dir /root/penglai 755 0 0
 file /root/penglai/penglai.ko ${RISCV_ROOTFS_HOME}/rootfsimg/build/penglai.ko 755 0 0
 file /root/prime ${RISCV_ROOTFS_HOME}/rootfsimg/build/prime 755 0 0
 file /root/host ${RISCV_ROOTFS_HOME}/rootfsimg/build/host 755 0 0
+file /root/sha ${RISCV_ROOTFS_HOME}/apps/mibench-penglai/security/sha/sha 755 0 0
+file /root/rijndael ${RISCV_ROOTFS_HOME}/apps/mibench-penglai/security/rijndael/rijndael 755 0 0
+file /root/hostc ${RISCV_ROOTFS_HOME}/rootfsimg/build/hostc 755 0 0
 # file /root/host ${RISCV_ROOTFS_HOME}/rootfsimg/build/count 755 0 0
+
+# mibench
+dir /root/mibench 755 0 0
+file /root/mibench/sha ${RISCV_ROOTFS_HOME}/apps/mibench/security/sha/sha 755 0 0
+file /root/mibench/sha_input_small.asc ${RISCV_ROOTFS_HOME}/apps/mibench/security/sha/input_small.asc 755 0 0
+file /root/mibench/sha_input_large.asc ${RISCV_ROOTFS_HOME}/apps/mibench/security/sha/input_large.asc 755 0 0
+file /root/mibench/rijndael ${RISCV_ROOTFS_HOME}/apps/mibench/security/rijndael/rijndael 755 0 0
 
 dir /etc/init.d 755 0 0
 file /etc/init.d/rcS ${RISCV_ROOTFS_HOME}/rootfsimg/rcS 755 0 0
