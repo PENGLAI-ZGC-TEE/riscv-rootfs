@@ -16,31 +16,55 @@ lsmod
 mknod /dev/penglai_enclave_dev c 10 63 
 ls /dev
 echo Penglai Enclave Start
+/root/hostc /root/prime
 echo -------------------------------------------------------
-/root/host /root/prime
 # /root/host /root/sha
 # dmesg -n 1
 cd /root
-time find . -name *asc
-ls
-time ./mibench/sha /root/mibench/sha_input_small.asc
-ls
-time ./hostc sha -fi /root/mibench/sha_input_small.asc
+# time find . -name *asc
 # ls
+
+# sha
+# echo "----------------------sha--------------------------"
+# time ./mibench/sha /root/mibench/sha_input_small.asc
+# time ./hostc sha -fi /root/mibench/sha_input_small.asc
+
+# # rijndael enc
+# echo "-------------------rijndael enc----------------------"
+# time ./mibench/rijndael /root/mibench/sha_input_small.asc output_small.enc e 1234567890abcdeffedcba09876543211234567890abcdeffedcba0987654321
+# time ./hostc ./rijndael -fi /root/mibench/sha_input_small.asc -fo output_small.enc e 1234567890abcdeffedcba09876543211234567890abcdeffedcba0987654321
+
+# # rijndael dec
+# echo "-------------------rijndael dec----------------------"
+# time ./mibench/rijndael output_small.enc output_small.dec d 1234567890abcdeffedcba09876543211234567890abcdeffedcba0987654321
+# time ./hostc ./rijndael -fi output_small.enc -fo output_small.dec d 1234567890abcdeffedcba09876543211234567890abcdeffedcba0987654321
+
+# bitcnts
+echo "---------------------bitcnts------------------------"
+time ./mibench/bitcnts 11520000
+time ./hostc ./bitcnts 11520000
+
+# fft
+echo "-----------------------fft------------------------"
+time ./mibench/fft 192 16384
+time ./hostc ./fft 192 16384
+
 # time ./mibench/sha /root/mibench/sha_input_large.asc
 # ls
 # time ./hostc sha -fi /root/mibench/sha_input_large.asc
-ls
+# ls
 # touch output_small.enc
 # echo "euh328d73h4ifui348f9j49fj4ifjwkjnf" > test
-time ./hostc ./rijndael -fi /root/mibench/sha_input_small.asc -fo output_small.enc e 1234567890abcdeffedcba09876543211234567890abcdeffedcba0987654321
-ls -lh
+# time ./hostc ./rijndael -fi /root/mibench/sha_input_small.asc -fo output_small.enc e 1234567890abcdeffedcba09876543211234567890abcdeffedcba0987654321
+# ls -lh
 # head output_small.enc
 # touch output_small.dec
 # time ./hostc ./rijndael -fi output_small.enc -fo output_small.dec d 1234567890abcdeffedcba09876543211234567890abcdeffedcba0987654321
 # head -n 1 output_small.dec | cut -c 1-10
 # ls -lh
-time ./mibench/rijndael /root/mibench/sha_input_small.asc output_small.enc e 1234567890abcdeffedcba09876543211234567890abcdeffedcba0987654321
+# time ./mibench/rijndael /root/mibench/sha_input_small.asc output_small.enc e 1234567890abcdeffedcba09876543211234567890abcdeffedcba0987654321
 # time ./mibench/rijndael output_small.enc output_small.dec d 1234567890abcdeffedcba09876543211234567890abcdeffedcba0987654321
 # head -n 1 output_small.dec | cut -c 1-10
 # ls -lh
+
+# time ./hostc coremark

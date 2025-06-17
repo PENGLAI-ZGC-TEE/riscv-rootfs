@@ -4,12 +4,17 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
+#include <sys/time.h>
 #include "sha.h"
 
 int main(int argc, char **argv)
 {
 	uint64_t time1;
     asm volatile("rdtime %0" : "=r"(time1));
+	// struct timeval starttime;
+	// struct timeval endtime;
+	// long benchtime;
+	// gettimeofday(&starttime, NULL);
 
     FILE *fin;
     SHA_INFO sha_info;
@@ -25,7 +30,10 @@ int main(int argc, char **argv)
 	    if (fin == NULL) {
 		printf("error opening %s for reading\n", *argv);
 	    } else {
-		sha_stream(&sha_info, fin);
+		for (int i = 0; i < 400; i++) {
+			fseek(fin, 0, SEEK_SET);
+			sha_stream(&sha_info, fin);
+		}
 		sha_print(&sha_info);
 		fclose(fin);
 	    }
@@ -34,7 +42,10 @@ int main(int argc, char **argv)
 
 	uint64_t time2;
     asm volatile("rdtime %0" : "=r"(time2));
-	printf("speed tick: %d\n", time2 - time1);
+	printf("speed tick: %ld\n", time2 - time1);
+	// gettimeofday(&endtime, NULL);
+	// benchtime =(endtime.tv_sec*1000000 + endtime.tv_usec)- (starttime.tv_sec * 1000000 + starttime.tv_usec);
+	// printf("speed time: %ld ms\n", benchtime);
 
     return(0);
 }

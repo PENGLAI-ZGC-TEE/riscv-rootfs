@@ -48,6 +48,9 @@ file /root/prime ${RISCV_ROOTFS_HOME}/rootfsimg/build/prime 755 0 0
 file /root/host ${RISCV_ROOTFS_HOME}/rootfsimg/build/host 755 0 0
 file /root/sha ${RISCV_ROOTFS_HOME}/apps/mibench-penglai/security/sha/sha 755 0 0
 file /root/rijndael ${RISCV_ROOTFS_HOME}/apps/mibench-penglai/security/rijndael/rijndael 755 0 0
+file /root/bitcnts ${RISCV_ROOTFS_HOME}/apps/mibench-penglai/automotive/bitcount/bitcnts 755 0 0
+file /root/fft ${RISCV_ROOTFS_HOME}/apps/mibench-penglai/telecomm/FFT/fft 755 0 0
+
 file /root/hostc ${RISCV_ROOTFS_HOME}/rootfsimg/build/hostc 755 0 0
 # file /root/host ${RISCV_ROOTFS_HOME}/rootfsimg/build/count 755 0 0
 
@@ -57,6 +60,11 @@ file /root/mibench/sha ${RISCV_ROOTFS_HOME}/apps/mibench/security/sha/sha 755 0 
 file /root/mibench/sha_input_small.asc ${RISCV_ROOTFS_HOME}/apps/mibench/security/sha/input_small.asc 755 0 0
 file /root/mibench/sha_input_large.asc ${RISCV_ROOTFS_HOME}/apps/mibench/security/sha/input_large.asc 755 0 0
 file /root/mibench/rijndael ${RISCV_ROOTFS_HOME}/apps/mibench/security/rijndael/rijndael 755 0 0
+file /root/mibench/bitcnts ${RISCV_ROOTFS_HOME}/apps/mibench/automotive/bitcount/bitcnts 755 0 0
+file /root/mibench/fft ${RISCV_ROOTFS_HOME}/apps/mibench/telecomm/FFT/fft 755 0 0
+
+# coremark
+file /root/coremark ${RISCV_ROOTFS_HOME}/apps/coremark/coremark-penglai/coremark 755 0 0
 
 dir /etc/init.d 755 0 0
 file /etc/init.d/rcS ${RISCV_ROOTFS_HOME}/rootfsimg/rcS 755 0 0

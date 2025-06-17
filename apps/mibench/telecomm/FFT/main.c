@@ -64,15 +64,15 @@ int main(int argc, char *argv[]) {
  /* regular*/
  fft_float (MAXSIZE,invfft,RealIn,ImagIn,RealOut,ImagOut);
  
- printf("RealOut:\n");
- for (i=0;i<MAXSIZE;i++)
-   printf("%f \t", RealOut[i]);
- printf("\n");
+//  printf("RealOut:\n");
+//  for (i=0;i<MAXSIZE;i++)
+//    printf("%f \t", RealOut[i]);
+//  printf("\n");
 
-printf("ImagOut:\n");
- for (i=0;i<MAXSIZE;i++)
-   printf("%f \t", ImagOut[i]);
-   printf("\n");
+// printf("ImagOut:\n");
+//  for (i=0;i<MAXSIZE;i++)
+//    printf("%f \t", ImagOut[i]);
+//    printf("\n");
 
  free(RealIn);
  free(ImagIn);

@@ -118,7 +118,7 @@ void fillrand(char *buf, int len)
 }    
 
 int encfile(FILE *fin, FILE *fout, aes *ctx, char *fn) {
-    eapp_print("start enc\n");
+    // eapp_print("start enc\n");
     size_t file_size = arguement.file1_len;
     char inbuf[BLOCK_SIZE], outbuf[BLOCK_SIZE];
     unsigned long i = 0, l = 0;
@@ -319,13 +319,17 @@ int entry(int argc)
     {                           /* encryption in Cipher Block Chaining mode */
         set_key(key, key_len, enc, ctx);
 
-        err = encfile(fin, fout, ctx, arguement.argv[1]);
+        for (int i = 0; i < 30; i++) {
+            err = encfile(fin, fout, ctx, arguement.argv[1]);
+        }
     }
     else
     {                           /* decryption in Cipher Block Chaining mode */
         set_key(key, key_len, dec, ctx);
     
-        err = decfile(fin, fout, ctx, arguement.argv[1], arguement.argv[2]);
+        for (int i = 0; i < 4; i++) {
+            err = decfile(fin, fout, ctx, arguement.argv[1], arguement.argv[2]);
+        }
     }
 exit:   
     // if(fout) 

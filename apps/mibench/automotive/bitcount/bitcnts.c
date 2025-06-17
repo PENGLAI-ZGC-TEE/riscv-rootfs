@@ -8,6 +8,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include "conio.h"
 #include <limits.h>
 #include <time.h>
@@ -20,6 +21,8 @@ static int CDECL bit_shifter(long int x);
 
 int main(int argc, char *argv[])
 {
+  uint64_t time1;
+  asm volatile("rdtime %0" : "=r"(time1));
   clock_t start, stop;
   double ct, cmin = DBL_MAX, cmax = 0;
   int i, cminix, cmaxix;
@@ -70,10 +73,14 @@ int main(int argc, char *argv[])
 	 cmaxix = i;
     }
     
-    printf("%-38s> Time: %7.3f sec.; Bits: %ld\n", text[i], ct, n);
+    // printf("%-38s> Time: %7.3f sec.; Bits: %ld\n", text[i], ct, n);
   }
   printf("\nBest  > %s\n", text[cminix]);
   printf("Worst > %s\n", text[cmaxix]);
+
+  uint64_t time2;
+  asm volatile("rdtime %0" : "=r"(time2));
+	printf("speed tick: %ld\n", time2 - time1);
   return 0;
 }
 

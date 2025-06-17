@@ -4,10 +4,11 @@
 # To use NIST's modified SHA of 7/11/94, define USE_MODIFIED_SHA
 
 CC = riscv64-unknown-linux-gnu-gcc
+# CFLAGS = -Wall
 CFLAGS = -O3 -Wall
 
-sha:	sha_driver.o sha.o
-	$(CC) -o $@ sha_driver.o sha.o
+sha:	sha_driver.c sha.c
+	$(CC) $(CFLAGS) -o $@ sha_driver.c sha.c
 	# strip $@
 
 clean:

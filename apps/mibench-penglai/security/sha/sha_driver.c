@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
+#include <sys/time.h>
 #include "sha.h"
 #include "eapp.h"
 #include "ocall.h"
@@ -13,6 +14,10 @@ int EAPP_ENTRY main(int argc, char **argv)
 {
 	uint64_t time1;
     asm volatile("rdtime %0" : "=r"(time1));
+	// struct timeval starttime;
+	// struct timeval endtime;
+	// long benchtime;
+	// gettimeofday(&starttime, NULL);
 
 	unsigned long * args;
 	EAPP_RESERVE_REG;
@@ -38,12 +43,17 @@ int EAPP_ENTRY main(int argc, char **argv)
 	char *fin = ((char *)DEFAULT_UNTRUSTED_PTR)+0x1000;
 	int len = *(uint64_t *)DEFAULT_UNTRUSTED_PTR;
 	eapp_print("file size: %d\n", len);
-	sha_stream(&sha_info, fin, len);
+	for (int i = 0; i < 400; i++) {
+		sha_stream(&sha_info, fin, len);
+	}
 	sha_print(&sha_info);
 
 	uint64_t time2;
     asm volatile("rdtime %0" : "=r"(time2));
-	eapp_print("speed tick: %d\n", time2 - time1);
+	eapp_print("speed tick: %ld\n", time2 - time1);
+	// gettimeofday(&endtime, NULL);
+	// benchtime =(endtime.tv_sec*1000000 + endtime.tv_usec)- (starttime.tv_sec * 1000000 + starttime.tv_usec);
+	// eapp_print("speed time: %ld ms\n", benchtime);
 
 	EAPP_RETURN(0);
     // return(0);

@@ -4,7 +4,10 @@
 #include <linux/uaccess.h>
 #include <linux/types.h>
 #include <asm/timex.h>
-#include <linux/types.h>
+// #include <asm/page.h>
+// #include <linux/mm.h>
+
+// #define PAGE_UP(x)   (((x) + PAGE_SIZE - 1) & ~(PAGE_SIZE - 1))
 
 #define PENGLAI_ENCLAVE_IOC_CREATE_ENCLAVE \
 	_IOR(PENGLAI_ENCLAVE_IOC_MAGIC, 0x00, struct penglai_enclave_user_param)

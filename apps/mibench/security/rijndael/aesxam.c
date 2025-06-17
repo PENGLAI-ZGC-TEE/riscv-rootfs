@@ -298,13 +298,21 @@ int main(int argc, char *argv[])
     {                           /* encryption in Cipher Block Chaining mode */
         set_key(key, key_len, enc, ctx);
 
-        err = encfile(fin, fout, ctx, argv[1]);
+        for (int i = 0; i < 30; i++) {
+            fseek(fin, 0, SEEK_SET);
+            fseek(fout, 0, SEEK_SET);
+            err = encfile(fin, fout, ctx, argv[1]);
+        }
     }
     else
     {                           /* decryption in Cipher Block Chaining mode */
         set_key(key, key_len, dec, ctx);
     
-        err = decfile(fin, fout, ctx, argv[1], argv[2]);
+        for (int i = 0; i < 4; i++) {
+            fseek(fin, 0, SEEK_SET);
+            fseek(fout, 0, SEEK_SET);
+            err = decfile(fin, fout, ctx, argv[1], argv[2]);
+        }
     }
 exit:   
     if(fout) 
