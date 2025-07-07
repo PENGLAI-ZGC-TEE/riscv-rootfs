@@ -242,13 +242,13 @@ int main(int argc, char *argv[])
     int     i=0, by=0, key_len=0, err = 0;
     aes     ctx[1];
 
-    if(argc != 5 || (toupper(*argv[3]) != 'D' && toupper(*argv[3]) != 'E'))
+    if(argc != 6 || (toupper(*argv[4]) != 'D' && toupper(*argv[4]) != 'E'))
     {
-        printf("usage: rijndael in_filename out_filename [d/e] key_in_hex\n"); 
+        printf("usage: rijndael times in_filename out_filename [d/e] key_in_hex\n"); 
         err = -1; goto exit;
     }
 
-    cp = argv[4];   /* this is a pointer to the hexadecimal key digits  */
+    cp = argv[5];   /* this is a pointer to the hexadecimal key digits  */
     i = 0;          /* this is a count for the input digits processed   */
     
     while(i < 64 && *cp)    /* the maximum key length is 32 bytes and   */
@@ -282,36 +282,36 @@ int main(int argc, char *argv[])
 
     key_len = i / 2;
 
-    if(!(fin = fopen(argv[1], "rb")))   /* try to open the input file */
+    if(!(fin = fopen(argv[2], "rb")))   /* try to open the input file */
     {
-        printf("The input file: %s could not be opened\n", argv[1]); 
+        printf("The input file: %s could not be opened\n", argv[2]); 
         err = -5; goto exit;
     }
 
-    if(!(fout = fopen(argv[2], "wb")))  /* try to open the output file */
+    if(!(fout = fopen(argv[3], "wb")))  /* try to open the output file */
     {
-        printf("The output file: %s could not be opened\n", argv[1]); 
+        printf("The output file: %s could not be opened\n", argv[3]); 
         err = -6; goto exit;
     }
 
-    if(toupper(*argv[3]) == 'E')
+    if(toupper(*argv[4]) == 'E')
     {                           /* encryption in Cipher Block Chaining mode */
         set_key(key, key_len, enc, ctx);
 
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < atoi(argv[1]); i++) {
             fseek(fin, 0, SEEK_SET);
             fseek(fout, 0, SEEK_SET);
-            err = encfile(fin, fout, ctx, argv[1]);
+            err = encfile(fin, fout, ctx, argv[2]);
         }
     }
     else
     {                           /* decryption in Cipher Block Chaining mode */
         set_key(key, key_len, dec, ctx);
     
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < atoi(argv[1]); i++) {
             fseek(fin, 0, SEEK_SET);
             fseek(fout, 0, SEEK_SET);
-            err = decfile(fin, fout, ctx, argv[1], argv[2]);
+            err = decfile(fin, fout, ctx, argv[2], argv[3]);
         }
     }
 exit:   

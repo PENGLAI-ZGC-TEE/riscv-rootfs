@@ -10,6 +10,18 @@
 #include "eapp.h"
 #include "ocall.h"
 
+struct arguement
+{
+  uint64_t file1_len;
+  uint64_t file2_len;
+  uint64_t argc;
+  char argv[10][256];
+  /* file
+  void* file1; offset: 0x1000
+  void* file2; offset: 0x400000
+  */
+} arguement;
+
 int EAPP_ENTRY main(int argc, char **argv)
 {
 	uint64_t time1;
@@ -40,10 +52,15 @@ int EAPP_ENTRY main(int argc, char **argv)
 	//     }
 	// }
     // }
+	memcpy(&arguement, (void *)DEFAULT_UNTRUSTED_PTR, sizeof(arguement));
 	char *fin = ((char *)DEFAULT_UNTRUSTED_PTR)+0x1000;
 	int len = *(uint64_t *)DEFAULT_UNTRUSTED_PTR;
 	eapp_print("file size: %d\n", len);
-	for (int i = 0; i < 400; i++) {
+	eapp_print("argc: %d:\n", arguement.argc);
+    for (int i = 0; i < arguement.argc; i ++) {
+        eapp_print("%s\n", arguement.argv[i]);
+    }
+	for (int i = 0; i < (arguement.argc > 1 ? atoi(arguement.argv[1]) : 1); i++) {
 		sha_stream(&sha_info, fin, len);
 	}
 	sha_print(&sha_info);

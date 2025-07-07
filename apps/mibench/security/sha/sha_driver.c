@@ -24,13 +24,16 @@ int main(int argc, char **argv)
 	sha_stream(&sha_info, fin);
 	sha_print(&sha_info);
     } else {
+	argc--;
 	while (--argc) {
+		int times = atoi(*(argv+1));
+		argv++;
 		printf("open file %s\n", *(argv+1));
 	    fin = fopen(*(++argv), "rb");
 	    if (fin == NULL) {
 		printf("error opening %s for reading\n", *argv);
 	    } else {
-		for (int i = 0; i < 400; i++) {
+		for (int i = 0; i < times; i++) {
 			fseek(fin, 0, SEEK_SET);
 			sha_stream(&sha_info, fin);
 		}

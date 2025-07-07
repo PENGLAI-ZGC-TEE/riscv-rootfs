@@ -26,28 +26,35 @@ cd /root
 
 # sha
 # echo "----------------------sha--------------------------"
-# time ./mibench/sha /root/mibench/sha_input_small.asc
-# time ./hostc sha -fi /root/mibench/sha_input_small.asc
+# time ./mibench/sha 500 /root/mibench/sha_input_small.asc
+# time ./hostc sha 500 -fi /root/mibench/sha_input_small.asc
 
 # # rijndael enc
 # echo "-------------------rijndael enc----------------------"
-# time ./mibench/rijndael /root/mibench/sha_input_small.asc output_small.enc e 1234567890abcdeffedcba09876543211234567890abcdeffedcba0987654321
-# time ./hostc ./rijndael -fi /root/mibench/sha_input_small.asc -fo output_small.enc e 1234567890abcdeffedcba09876543211234567890abcdeffedcba0987654321
+# time ./mibench/rijndael 30 /root/mibench/sha_input_small.asc output_small.enc e 1234567890abcdeffedcba09876543211234567890abcdeffedcba0987654321
+# time ./hostc ./rijndael 30 -fi /root/mibench/sha_input_small.asc -fo output_small.enc e 1234567890abcdeffedcba09876543211234567890abcdeffedcba0987654321
 
 # # rijndael dec
 # echo "-------------------rijndael dec----------------------"
-# time ./mibench/rijndael output_small.enc output_small.dec d 1234567890abcdeffedcba09876543211234567890abcdeffedcba0987654321
-# time ./hostc ./rijndael -fi output_small.enc -fo output_small.dec d 1234567890abcdeffedcba09876543211234567890abcdeffedcba0987654321
+# time ./mibench/rijndael 4 output_small.enc output_small.dec d 1234567890abcdeffedcba09876543211234567890abcdeffedcba0987654321
+# time ./hostc ./rijndael 4 -fi output_small.enc -fo output_small.dec d 1234567890abcdeffedcba09876543211234567890abcdeffedcba0987654321
 
 # bitcnts
 echo "---------------------bitcnts------------------------"
-time ./mibench/bitcnts 11520000
-time ./hostc ./bitcnts 11520000
+
+./mibench/bitcnts 100000
+./hostc ./bitcnts 100000
+
+time ./mibench/bitcnts 10000000
+time ./hostc ./bitcnts 10000000
+
+./mibench/bitcnts 30000000
+./hostc ./bitcnts 30000000
 
 # fft
-echo "-----------------------fft------------------------"
-time ./mibench/fft 192 16384
-time ./hostc ./fft 192 16384
+# echo "-----------------------fft------------------------"
+# time ./mibench/fft 192 16384
+# time ./hostc ./fft 192 16384
 
 # time ./mibench/sha /root/mibench/sha_input_large.asc
 # ls

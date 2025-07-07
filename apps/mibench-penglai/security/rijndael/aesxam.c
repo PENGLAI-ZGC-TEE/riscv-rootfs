@@ -262,13 +262,13 @@ int entry(int argc)
     int     i=0, by=0, key_len=0, err = 0;
     aes     ctx[1];
 
-    if(argc != 5 || (toupper(arguement.argv[3][0]) != 'D' && toupper(arguement.argv[3][0]) != 'E'))
+    if(argc != 6 || (toupper(arguement.argv[4][0]) != 'D' && toupper(arguement.argv[4][0]) != 'E'))
     {
-        eapp_print("usage: rijndael in_filename out_filename [d/e] key_in_hex\n"); 
+        eapp_print("usage: rijndael times in_filename out_filename [d/e] key_in_hex\n"); 
         err = -1; goto exit;
     }
 
-    cp = arguement.argv[4];   /* this is a pointer to the hexadecimal key digits  */
+    cp = arguement.argv[5];   /* this is a pointer to the hexadecimal key digits  */
     i = 0;          /* this is a count for the input digits processed   */
     
     while(i < 64 && *cp)    /* the maximum key length is 32 bytes and   */
@@ -315,20 +315,20 @@ int entry(int argc)
     //     err = -6; goto exit;
     // }
 
-    if(toupper(arguement.argv[3][0]) == 'E')
+    if(toupper(arguement.argv[4][0]) == 'E')
     {                           /* encryption in Cipher Block Chaining mode */
         set_key(key, key_len, enc, ctx);
 
-        for (int i = 0; i < 30; i++) {
-            err = encfile(fin, fout, ctx, arguement.argv[1]);
+        for (int i = 0; i < atoi(arguement.argv[1]); i++) {
+            err = encfile(fin, fout, ctx, arguement.argv[2]);
         }
     }
     else
     {                           /* decryption in Cipher Block Chaining mode */
         set_key(key, key_len, dec, ctx);
     
-        for (int i = 0; i < 4; i++) {
-            err = decfile(fin, fout, ctx, arguement.argv[1], arguement.argv[2]);
+        for (int i = 0; i < atoi(arguement.argv[1]); i++) {
+            err = decfile(fin, fout, ctx, arguement.argv[2], arguement.argv[3]);
         }
     }
 exit:   
