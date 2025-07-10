@@ -18,4 +18,7 @@ ls /dev
 echo Penglai Enclave Start
 echo -------------------------------------------------------
 /root/host /root/prime
+echo -------------------------------------------------------
+echo FDI Test OFB Start
+/root/fdi-test-ofb 
 # /root/host /root/count
