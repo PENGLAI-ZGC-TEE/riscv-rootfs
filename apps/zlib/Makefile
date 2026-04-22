@@ -15,7 +15,7 @@ $(REPO_PATH): $(TARBALL)
 	mv $(shell basename $(TARBALL) .tar.gz) $@
 
 $(APP): | $(REPO_PATH)
-	cd $(REPO_PATH) && CHOST=riscv64-unknown-linux-gnu ./configure $(CONFIG_FLAGS)
+	cd $(REPO_PATH) && CHOST=riscv64-linux-gnu ./configure $(CONFIG_FLAGS)
 	$(MAKE) -C $(REPO_PATH)
 	$(MAKE) -C $(REPO_PATH) install
 	cd build && ln -sf lib/libz.so.1 zlib

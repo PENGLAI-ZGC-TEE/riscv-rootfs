@@ -9,6 +9,6 @@ $(REPO_PATH):
 	cd $@ && git apply ../riscv-cross-compile.patch
 
 $(APP): | $(REPO_PATH)
-	CROSS_COMPILE=riscv64-unknown-linux-gnu- $(MAKE) -C $(REPO_PATH)
+	CROSS_COMPILE=riscv64-linux-gnu- $(MAKE) -C $(REPO_PATH)
 	ln -sf $(abspath $(REPO_PATH)/src/$(NAME)) $@
-	riscv64-unknown-linux-gnu-strip $(abspath $(REPO_PATH)/src/$(NAME))
+	riscv64-linux-gnu-strip $(abspath $(REPO_PATH)/src/$(NAME))

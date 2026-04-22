@@ -4,8 +4,8 @@ include $(RISCV_ROOTFS_HOME)/Makefile.app
 
 REPO_PATH = repo
 TARBALL = dropbear-2019.78.tar.bz2
-CONFIG_FLAGS = CC=riscv64-unknown-linux-gnu-gcc \
-			   CXX=riscv64-unknown-linux-gnu-g++ \
+CONFIG_FLAGS = CC=riscv64-linux-gnu-gcc \
+			   CXX=riscv64-linux-gnu-g++ \
 			   --host=riscv64 \
 			   --with-zlib=$(RISCV_ROOTFS_HOME)/apps/zlib/build \
 			   --prefix=$(shell realpath build)
