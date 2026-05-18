@@ -50,7 +50,7 @@ int EAPP_ENTRY main(int argc, char **argv)
 
 	uint64_t time2;
     asm volatile("rdtime %0" : "=r"(time2));
-	eapp_print("speed tick: %ld\n", time2 - time1);
+	// eapp_print("speed tick: %ld\n", time2 - time1);
 	// gettimeofday(&endtime, NULL);
 	// benchtime =(endtime.tv_sec*1000000 + endtime.tv_usec)- (starttime.tv_sec * 1000000 + starttime.tv_usec);
 	// eapp_print("speed time: %ld ms\n", benchtime);
